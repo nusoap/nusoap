@@ -1,0 +1,32 @@
+{
+  "name": "nusoap/nusoap",
+  "description": "description",
+  "minimum-stability": "stable",
+  "type": "library",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Dietrich Ayala",
+      "email": "dietrich@ganx4.com"
+    },
+    {
+      "name": "Scott Nichol",
+      "email": "snichol@users.sourceforge.net"
+    },
+    {
+      "name": "Lib nusoap",
+      "email": "libnusoap@gmail.com"
+    },
+    {
+      "name": "Gabriel Cruz",
+      "email": "gabrielcruz.mail@gmail.com"
+    }
+  ],
+  "require": {
+  },
+  "autoload": {
+    "psr-4": {
+      "NuSoap\\": "src/"
+    }
+  }
+}
