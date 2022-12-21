@@ -1,8 +1,16 @@
 <?php
 
-namespace NuSoap;
+namespace NuSoap\Client;
 
 
+use NuSoap\fault;
+use NuSoap\faultcode;
+use NuSoap\faultdetail;
+use NuSoap\faultstring;
+use NuSoap\NuSoap;
+use NuSoap\operation;
+use NuSoap\Parser;
+use NuSoap\TransportHttp;
 use NuSoap\Wsdl\Wsdl;
 
 /**

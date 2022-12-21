@@ -1,8 +1,13 @@
 <?php
 
-namespace NuSoap;
+namespace NuSoap\Server;
 
+use NuSoap\Fault;
+use NuSoap\NuSoap;
+use NuSoap\Parser;
+use NuSoap\Wsdl\Style;
 use NuSoap\Wsdl\Wsdl;
+use NuSoap\XmlSchema;
 
 /**
  *
@@ -151,7 +156,7 @@ class Server extends NuSoap
      * @var mixed
      * @access private
      */
-    var $wsdl = false;
+    var $wsdl = null;
     /**
      * URL for WSDL (if one)
      * @var mixed
@@ -983,18 +988,23 @@ class Server extends NuSoap
         if ($this->externalWSDLURL) {
             die('You cannot bind to an external WSDL file, and register methods outside of it! Please choose either WSDL or no WSDL.');
         }
+
         if (!$name) {
             die('You must specify a name when you register an operation');
         }
+
         if (!is_array($in)) {
             die('You must provide an array for operation inputs');
         }
+
         if (!is_array($out)) {
             die('You must provide an array for operation outputs');
         }
-        if (false == $namespace) {
+
+        if (!$namespace) {
         }
-        if (false == $soapaction) {
+
+        if (!$soapaction) {
             if (isset($_SERVER)) {
                 $SERVER_NAME = $_SERVER['SERVER_NAME'];
                 $SCRIPT_NAME = isset($_SERVER['PHP_SELF']) ? $_SERVER['PHP_SELF'] : $_SERVER['SCRIPT_NAME'];
@@ -1011,28 +1021,35 @@ class Server extends NuSoap
             } else {
                 $SCHEME = 'http';
             }
+
             $soapaction = "$SCHEME://$SERVER_NAME$SCRIPT_NAME/$name";
         }
-        if (false == $style) {
+
+        if (!$style) {
             $style = "rpc";
         }
-        if (false == $use) {
+
+        if (!$use) {
             $use = "encoded";
         }
+
         if ($use == 'encoded' && $encodingStyle == '') {
             $encodingStyle = 'http://schemas.xmlsoap.org/soap/encoding/';
         }
 
-        $this->operations[$name] = array(
+        $this->operations[$name] = [
             'name' => $name,
             'in' => $in,
             'out' => $out,
             'namespace' => $namespace,
             'soapaction' => $soapaction,
-            'style' => $style);
+            'style' => $style
+        ];
+
         if ($this->wsdl) {
             $this->wsdl->addOperation($name, $in, $out, $namespace, $soapaction, $style, $use, $documentation, $encodingStyle);
         }
+
         return true;
     }
 
@@ -1059,15 +1076,21 @@ class Server extends NuSoap
      * Sets up wsdl object.
      * Acts as a flag to enable internal WSDL generation
      *
-     * @param string $serviceName , name of the service
+     * @param string $serviceName name of the service
      * @param mixed $namespace optional 'tns' service namespace or false
      * @param mixed $endpoint optional URL of service endpoint or false
      * @param string $style optional (rpc|document) WSDL style (also specified by operation)
      * @param string $transport optional SOAP transport
      * @param mixed $schemaTargetNamespace optional 'types' targetNamespace for service schema or false
      */
-    function configureWSDL($serviceName, $namespace = false, $endpoint = false, $style = 'rpc', $transport = 'http://schemas.xmlsoap.org/soap/http', $schemaTargetNamespace = false)
-    {
+    public function configureWsdl(
+        $serviceName,
+        $namespace = false,
+        $endpoint = false,
+        $style = Style::RPC,
+        $transport = 'http://schemas.xmlsoap.org/soap/http',
+        $schemaTargetNamespace = false
+    ) {
         global $HTTP_SERVER_VARS;
 
         if (isset($_SERVER)) {
@@ -1093,11 +1116,11 @@ class Server extends NuSoap
         } else {
             $SERVER_PORT = ':' . $SERVER_PORT;
         }
-        if (false == $namespace) {
+        if (!$namespace) {
             $namespace = "http://$SERVER_NAME/soap/$serviceName";
         }
 
-        if (false == $endpoint) {
+        if (!$endpoint) {
             if ($HTTPS == '1' || $HTTPS == 'on') {
                 $SCHEME = 'https';
             } else {
@@ -1106,7 +1129,7 @@ class Server extends NuSoap
             $endpoint = "$SCHEME://$SERVER_NAME$SERVER_PORT$SCRIPT_NAME";
         }
 
-        if (false == $schemaTargetNamespace) {
+        if (!$schemaTargetNamespace) {
             $schemaTargetNamespace = $namespace;
         }
 
@@ -1116,24 +1139,40 @@ class Server extends NuSoap
         $this->wsdl->namespaces['tns'] = $namespace;
         $this->wsdl->namespaces['soap'] = 'http://schemas.xmlsoap.org/wsdl/soap/';
         $this->wsdl->namespaces['wsdl'] = 'http://schemas.xmlsoap.org/wsdl/';
+
         if ($schemaTargetNamespace != $namespace) {
             $this->wsdl->namespaces['types'] = $schemaTargetNamespace;
         }
+
         $this->wsdl->schemas[$schemaTargetNamespace][0] = new XmlSchema('', '', $this->wsdl->namespaces);
+
         if ($style == 'document') {
             $this->wsdl->schemas[$schemaTargetNamespace][0]->schemaInfo['elementFormDefault'] = 'qualified';
         }
+
         $this->wsdl->schemas[$schemaTargetNamespace][0]->schemaTargetNamespace = $schemaTargetNamespace;
         $this->wsdl->schemas[$schemaTargetNamespace][0]->imports['http://schemas.xmlsoap.org/soap/encoding/'][0] = array('location' => '', 'loaded' => true);
         $this->wsdl->schemas[$schemaTargetNamespace][0]->imports['http://schemas.xmlsoap.org/wsdl/'][0] = array('location' => '', 'loaded' => true);
-        $this->wsdl->bindings[$serviceName . 'Binding'] = array(
+
+        $this->wsdl->bindings[$serviceName . 'Binding'] = [
             'name' => $serviceName . 'Binding',
             'style' => $style,
             'transport' => $transport,
-            'portType' => $serviceName . 'PortType');
-        $this->wsdl->ports[$serviceName . 'Port'] = array(
+            'portType' => $serviceName . 'PortType'
+        ];
+
+        $this->wsdl->ports[$serviceName . 'Port'] = [
             'binding' => $serviceName . 'Binding',
             'location' => $endpoint,
-            'bindingType' => 'http://schemas.xmlsoap.org/wsdl/soap/');
+            'bindingType' => 'http://schemas.xmlsoap.org/wsdl/soap/'
+        ];
+    }
+
+    /**
+     * @return Wsdl|null
+     */
+    public function wsdl()
+    {
+        return $this->wsdl;
     }
 }
