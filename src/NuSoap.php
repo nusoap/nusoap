@@ -186,28 +186,97 @@ class NuSoap
      * @access   public
      */
     public $typemap = array(
-        'http://www.w3.org/2001/XMLSchema' => array(
-            'string' => 'string', 'boolean' => 'boolean', 'float' => 'double', 'double' => 'double', 'decimal' => 'double',
-            'duration' => '', 'dateTime' => 'string', 'time' => 'string', 'date' => 'string', 'gYearMonth' => '',
-            'gYear' => '', 'gMonthDay' => '', 'gDay' => '', 'gMonth' => '', 'hexBinary' => 'string', 'base64Binary' => 'string',
+        'http://www.w3.org/2001/XMLSchema' => [
+            'string' => 'string',
+            'boolean' => 'boolean',
+            'float' => 'double',
+            'double' => 'double',
+            'decimal' => 'double',
+            'duration' => '',
+            'dateTime' => 'string',
+            'time' => 'string',
+            'date' => 'string',
+            'gYearMonth' => '',
+            'gYear' => '',
+            'gMonthDay' => '',
+            'gDay' => '',
+            'gMonth' => '',
+            'hexBinary' => 'string',
+            'base64Binary' => 'string',
+
             // abstract "any" types
-            'anyType' => 'string', 'anySimpleType' => 'string',
+            'anyType' => 'string',
+            'anySimpleType' => 'string',
+
             // derived datatypes
-            'normalizedString' => 'string', 'token' => 'string', 'language' => '', 'NMTOKEN' => '', 'NMTOKENS' => '', 'Name' => '', 'NCName' => '', 'ID' => '',
-            'IDREF' => '', 'IDREFS' => '', 'ENTITY' => '', 'ENTITIES' => '', 'integer' => 'integer', 'nonPositiveInteger' => 'integer',
-            'negativeInteger' => 'integer', 'long' => 'integer', 'int' => 'integer', 'short' => 'integer', 'byte' => 'integer', 'nonNegativeInteger' => 'integer',
-            'unsignedLong' => '', 'unsignedInt' => '', 'unsignedShort' => '', 'unsignedByte' => '', 'positiveInteger' => ''),
-        'http://www.w3.org/2000/10/XMLSchema' => array(
-            'i4' => '', 'int' => 'integer', 'boolean' => 'boolean', 'string' => 'string', 'double' => 'double',
-            'float' => 'double', 'dateTime' => 'string',
-            'timeInstant' => 'string', 'base64Binary' => 'string', 'base64' => 'string', 'ur-type' => 'array'),
-        'http://www.w3.org/1999/XMLSchema' => array(
-            'i4' => '', 'int' => 'integer', 'boolean' => 'boolean', 'string' => 'string', 'double' => 'double',
-            'float' => 'double', 'dateTime' => 'string',
-            'timeInstant' => 'string', 'base64Binary' => 'string', 'base64' => 'string', 'ur-type' => 'array'),
-        'http://soapinterop.org/xsd' => array('SOAPStruct' => 'struct'),
-        'http://schemas.xmlsoap.org/soap/encoding/' => array('base64' => 'string', 'array' => 'array', 'Array' => 'array'),
-        'http://xml.apache.org/xml-soap' => array('Map')
+            'normalizedString' => 'string',
+            'token' => 'string',
+            'language' => '',
+            'NMTOKEN' => '',
+            'NMTOKENS' => '',
+            'Name' => '',
+            'NCName' => '',
+            'ID' => '',
+            'IDREF' => '',
+            'IDREFS' => '',
+            'ENTITY' => '',
+            'ENTITIES' => '',
+            'integer' => 'integer',
+            'nonPositiveInteger' => 'integer',
+            'negativeInteger' => 'integer',
+            'long' => 'integer',
+            'int' => 'integer',
+            'short' => 'integer',
+            'byte' => 'integer',
+            'nonNegativeInteger' => 'integer',
+            'unsignedLong' => '',
+            'unsignedInt' => '',
+            'unsignedShort' => '',
+            'unsignedByte' => '',
+            'positiveInteger' => ''
+        ],
+
+        'http://www.w3.org/2000/10/XMLSchema' => [
+            'i4' => '',
+            'int' => 'integer',
+            'boolean' => 'boolean',
+            'string' => 'string',
+            'double' => 'double',
+            'float' => 'double',
+            'dateTime' => 'string',
+            'timeInstant' => 'string',
+            'base64Binary' => 'string',
+            'base64' => 'string',
+            'ur-type' => 'array'
+        ],
+
+        'http://www.w3.org/1999/XMLSchema' => [
+            'i4' => '',
+            'int' => 'integer',
+            'boolean' => 'boolean',
+            'string' => 'string',
+            'double' => 'double',
+            'float' => 'double',
+            'dateTime' => 'string',
+            'timeInstant' => 'string',
+            'base64Binary' => 'string',
+            'base64' => 'string',
+            'ur-type' => 'array'
+        ],
+
+        'http://soapinterop.org/xsd' => [
+            'SOAPStruct' => 'struct'
+        ],
+
+        'http://schemas.xmlsoap.org/soap/encoding/' => [
+            'base64' => 'string',
+            'array' => 'array',
+            'Array' => 'array'
+        ],
+
+        'http://xml.apache.org/xml-soap' => [
+            'Map'
+        ]
     );
 
     /**
@@ -337,7 +406,7 @@ class NuSoap
      * gets the current debug data for this instance as an XML comment
      * this may change the contents of the debug data
      *
-     * @return   debug data as an XML comment
+     * @return   string data as an XML comment
      * @access   public
      */
     public function &getDebugAsXMLComment()
@@ -348,6 +417,7 @@ class NuSoap
             $this->debug_str = str_replace('--', '- -', $this->debug_str);
         }
         $ret = "<!--\n" . $this->debug_str . "\n-->";
+
         return $ret;
     }
 
@@ -511,6 +581,7 @@ class NuSoap
             } elseif (is_string($val)) {
                 $val = $this->expandEntities($val);
             }
+
             if ($use == 'literal') {
                 $xml = "<$name$xmlns$atts>$val</$name>";
                 $this->debug("serialize_val returning $xml");

@@ -771,7 +771,7 @@ class Wsdl extends NuSoap
      */
     public function webDescription()
     {
-        global $HTTP_SERVER_VARS;
+//        global $HTTP_SERVER_VARS;
 
         if (isset($_SERVER)) {
             $PHP_SELF = $_SERVER['PHP_SELF'];
