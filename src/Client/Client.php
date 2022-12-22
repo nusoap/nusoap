@@ -105,8 +105,17 @@ class Client extends NuSoap
      * @param string $portName optional portName in WSDL document
      * @access   public
      */
-    public function __construct($endpoint, $wsdl = false, $proxyhost = false, $proxyport = false, $proxyusername = false, $proxypassword = false, $timeout = 0, $response_timeout = 30, $portName = '')
-    {
+    public function __construct(
+        $endpoint,
+        $wsdl = false,
+        $proxyhost = false,
+        $proxyport = false,
+        $proxyusername = false,
+        $proxypassword = false,
+        $timeout = 0,
+        $response_timeout = 30,
+        $portName = ''
+    ) {
         parent::__construct();
 
         $this->endpoint = $endpoint;
