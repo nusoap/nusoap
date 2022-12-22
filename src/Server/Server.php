@@ -2,7 +2,8 @@
 
 namespace NuSoap\Server;
 
-use NuSoap\Fault;
+use NuSoap\Fault\Code;
+use NuSoap\Fault\Fault;
 use NuSoap\NuSoap;
 use NuSoap\Parser;
 use NuSoap\Wsdl\Style;
@@ -26,123 +27,123 @@ class Server extends NuSoap
      * @var array
      * @access private
      */
-    var $headers = [];
+    public $headers = [];
 
     /**
      * HTTP request
      * @var string
      * @access private
      */
-    var $request = '';
+    public $request = '';
     /**
      * SOAP headers from request (incomplete namespace resolution; special characters not escaped) (text)
      * @var string
      * @access public
      */
-    var $requestHeaders = '';
+    public $requestHeaders = '';
     /**
      * SOAP Headers from request (parsed)
      * @var mixed
      * @access public
      */
-    var $requestHeader = NULL;
+    public $requestHeader = NULL;
     /**
      * SOAP body request portion (incomplete namespace resolution; special characters not escaped) (text)
      * @var string
      * @access public
      */
-    var $document = '';
+    public $document = '';
     /**
      * SOAP payload for request (text)
      * @var string
      * @access public
      */
-    var $requestSOAP = '';
+    public $requestSOAP = '';
     /**
      * requested method namespace URI
      * @var string
      * @access private
      */
-    var $methodURI = '';
+    public $methodURI = '';
     /**
      * name of method requested
      * @var string
      * @access private
      */
-    var $methodname = '';
+    public $methodname = '';
     /**
      * method parameters from request
      * @var array
      * @access private
      */
-    var $methodparams = array();
+    public $methodparams = [];
     /**
      * SOAP Action from request
      * @var string
      * @access private
      */
-    var $SOAPAction = '';
+    public $SOAPAction = '';
     /**
      * character set encoding of incoming (request) messages
      * @var string
      * @access public
      */
-    var $xml_encoding = '';
+    public $xml_encoding = '';
     /**
      * toggles whether the parser decodes element content w/ utf8_decode()
      * @var boolean
      * @access public
      */
-    var $decode_utf8 = true;
+    public $decode_utf8 = true;
 
     /**
      * HTTP headers of response
      * @var array
      * @access public
      */
-    var $outgoing_headers = array();
+    public $outgoing_headers = array();
     /**
      * HTTP response
      * @var string
      * @access private
      */
-    var $response = '';
+    public $response = '';
     /**
      * SOAP headers for response (text or array of soapval or associative array)
      * @var mixed
      * @access public
      */
-    var $responseHeaders = '';
+    public $responseHeaders = '';
     /**
      * SOAP payload for response (text)
      * @var string
      * @access private
      */
-    var $responseSOAP = '';
+    public $responseSOAP = '';
     /**
      * method return value to place in response
      * @var mixed
      * @access private
      */
-    var $methodreturn = false;
+    public $methodreturn = false;
     /**
      * whether $methodreturn is a string of literal XML
      * @var boolean
      * @access public
      */
-    var $methodreturnisliteralxml = false;
+    public $methodreturnisliteralxml = false;
     /**
      * SOAP fault for response (or false)
      * @var mixed
      * @access private
      */
-    var $fault = false;
+    public $fault = false;
     /**
      * text indication of result (for debugging)
      * @var string
      * @access private
      */
-    var $result = 'successful';
+    public $result = 'successful';
 
     /**
      * assoc array of operations => opData; operations are added by the register()
@@ -150,25 +151,25 @@ class Server extends NuSoap
      * @var array
      * @access private
      */
-    var $operations = array();
+    public $operations = array();
     /**
      * wsdl instance (if one)
      * @var mixed
      * @access private
      */
-    var $wsdl = null;
+    public $wsdl = null;
     /**
      * URL for WSDL (if one)
      * @var mixed
      * @access private
      */
-    var $externalWSDLURL = false;
+    public $externalWSDLURL = false;
     /**
      * whether to append debug to response as XML comment
      * @var boolean
      * @access public
      */
-    var $debug_flag = false;
+    public $debug_flag = false;
 
 
     /**
@@ -473,11 +474,11 @@ class Server extends NuSoap
                     } elseif ($this->headers['content-encoding'] == 'gzip' && $degzdata = gzinflate(substr($data, 10))) {
                         $data = $degzdata;
                     } else {
-                        $this->fault('SOAP-ENV:Client', 'Errors occurred when trying to decode the data');
+                        $this->fault(Code::CLIENT, 'Errors occurred when trying to decode the data');
                         return;
                     }
                 } else {
-                    $this->fault('SOAP-ENV:Client', 'This Server does not support compressed data');
+                    $this->fault(Code::CLIENT, 'This Server does not support compressed data');
                     return;
                 }
             }
@@ -531,7 +532,7 @@ class Server extends NuSoap
                 $this->methodname = $this->opData['name'];
             } else {
                 $this->debug('in invoke_method, no WSDL for operation=' . $this->methodname);
-                $this->fault('SOAP-ENV:Client', "Operation '" . $this->methodname . "' is not defined in the WSDL for this service");
+                $this->fault(Code::CLIENT, "Operation '" . $this->methodname . "' is not defined in the WSDL for this service");
                 return;
             }
         } else {
@@ -572,7 +573,7 @@ class Server extends NuSoap
             if (!function_exists($this->methodname)) {
                 $this->debug("in invoke_method, function '$this->methodname' not found!");
                 $this->result = 'fault: method not found';
-                $this->fault('SOAP-ENV:Client', "method '$this->methodname'('$orig_methodname') not defined in service('$try_class' '$delim')");
+                $this->fault(Code::CLIENT, "method '$this->methodname'('$orig_methodname') not defined in service('$try_class' '$delim')");
                 return;
             }
         } else {
@@ -580,7 +581,7 @@ class Server extends NuSoap
             if (!in_array($method_to_compare, get_class_methods($class))) {
                 $this->debug("in invoke_method, method '$this->methodname' not found in class '$class'!");
                 $this->result = 'fault: method not found';
-                $this->fault('SOAP-ENV:Client', "method '$this->methodname'/'$method_to_compare'('$orig_methodname') not defined in service/'$class'('$try_class' '$delim')");
+                $this->fault(Code::CLIENT, "method '$this->methodname'/'$method_to_compare'('$orig_methodname') not defined in service/'$class'('$try_class' '$delim')");
                 return;
             }
         }
@@ -592,7 +593,7 @@ class Server extends NuSoap
             $this->debug('ERROR: request not verified against method signature');
             $this->result = 'fault: request failed validation against method signature';
             // return fault
-            $this->fault('SOAP-ENV:Client', "Operation '$this->methodname' not defined in service.");
+            $this->fault(Code::CLIENT, "Operation '$this->methodname' not defined in service.");
             return;
         }
 
@@ -619,7 +620,7 @@ class Server extends NuSoap
             if ($this->methodparams) {
                 foreach ($this->methodparams as $param) {
                     if (is_array($param) || is_object($param)) {
-                        $this->fault('SOAP-ENV:Client', 'NuSOAP does not handle complexType parameters correctly when using eval; call_user_func_array must be available');
+                        $this->fault(Code::CLIENT, 'NuSOAP does not handle complexType parameters correctly when using eval; call_user_func_array must be available');
                         return;
                     }
                     $funcCall .= "\"$param\",";
@@ -896,7 +897,7 @@ class Server extends NuSoap
         // if fault occurred during message parsing
         if ($err = $parser->getError()) {
             $this->result = 'fault: error in msg parsing: ' . $err;
-            $this->fault('SOAP-ENV:Client', "error in msg parsing:\n" . $err);
+            $this->fault(Code::CLIENT, "error in msg parsing:\n" . $err);
             // else successfully parsed request into soapval object
         } else {
             // get/set methodname

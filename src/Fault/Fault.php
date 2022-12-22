@@ -1,6 +1,8 @@
 <?php
 
-namespace NuSoap;
+namespace NuSoap\Fault;
+
+use NuSoap\NuSoap;
 
 /**
  * Contains information for a SOAP fault.
@@ -17,25 +19,25 @@ class Fault extends NuSoap
      * @var string
      * @access private
      */
-    var $faultcode;
+    public $faultcode;
     /**
      * The fault actor
      * @var string
      * @access private
      */
-    var $faultactor;
+    public $faultactor;
     /**
      * The fault string, a description of the fault
      * @var string
      * @access private
      */
-    var $faultstring;
+    public $faultstring;
     /**
      * The fault detail, typically a string or array of string
      * @var mixed
      * @access private
      */
-    var $faultdetail;
+    public $faultdetail;
 
     /**
      * constructor
@@ -63,9 +65,11 @@ class Fault extends NuSoap
     function serialize()
     {
         $ns_string = '';
+
         foreach ($this->namespaces as $k => $v) {
             $ns_string .= "\n  xmlns:$k=\"$v\"";
         }
+
         $return_msg =
             '<?xml version="1.0" encoding="' . $this->soap_defencoding . '"?>' .
             '<SOAP-ENV:Envelope SOAP-ENV:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"' . $ns_string . ">\n" .

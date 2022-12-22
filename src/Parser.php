@@ -13,39 +13,39 @@ namespace NuSoap;
 class Parser extends NuSoap
 {
 
-    var $xml = '';
-    var $xml_encoding = '';
-    var $method = '';
-    var $root_struct = '';
-    var $root_struct_name = '';
-    var $root_struct_namespace = '';
-    var $root_header = '';
-    var $document = '';            // incoming SOAP body (text)
+    public $xml = '';
+    public $xml_encoding = '';
+    public $method = '';
+    public $root_struct = '';
+    public $root_struct_name = '';
+    public $root_struct_namespace = '';
+    public $root_header = '';
+    public $document = '';            // incoming SOAP body (text)
     // determines where in the message we are (envelope,header,body,method)
-    var $status = '';
-    var $position = 0;
-    var $depth = 0;
-    var $default_namespace = '';
-    var $namespaces = array();
-    var $message = array();
-    var $parent = '';
-    var $fault = false;
-    var $fault_code = '';
-    var $fault_str = '';
-    var $fault_detail = '';
-    var $depth_array = array();
-    var $debug_flag = true;
-    var $soapresponse = NULL;    // parsed SOAP Body
-    var $soapheader = NULL;        // parsed SOAP Header
-    var $responseHeaders = '';    // incoming SOAP headers (text)
-    var $body_position = 0;
+    public $status = '';
+    public $position = 0;
+    public $depth = 0;
+    public $default_namespace = '';
+    public $namespaces = array();
+    public $message = array();
+    public $parent = '';
+    public $fault = false;
+    public $fault_code = '';
+    public $fault_str = '';
+    public $fault_detail = '';
+    public $depth_array = array();
+    public $debug_flag = true;
+    public $soapresponse = NULL;    // parsed SOAP Body
+    public $soapheader = NULL;        // parsed SOAP Header
+    public $responseHeaders = '';    // incoming SOAP headers (text)
+    public $body_position = 0;
     // for multiref parsing:
     // array of id => pos
-    var $ids = array();
+    public $ids = array();
     // array of id => hrefs => pos
-    var $multirefs = array();
+    public $multirefs = array();
     // toggle for auto-decoding element content
-    var $decode_utf8 = true;
+    public $decode_utf8 = true;
 
     /**
      * constructor that actually does the parsing
@@ -59,88 +59,12 @@ class Parser extends NuSoap
     public function __construct($xml, $encoding = 'UTF-8', $method = '', $decode_utf8 = true)
     {
         parent::__construct();
+
         $this->xml = $xml;
         $this->xml_encoding = $encoding;
         $this->method = $method;
         $this->decode_utf8 = $decode_utf8;
-
-        // Check whether content has been read.
-        if (!empty($xml)) {
-            // Check XML encoding
-            $pos_xml = strpos($xml, '<?xml');
-            if ($pos_xml !== FALSE) {
-                $xml_decl = substr($xml, $pos_xml, strpos($xml, '?>', $pos_xml + 2) - $pos_xml + 1);
-                if (preg_match("/encoding=[\"']([^\"']*)[\"']/", $xml_decl, $res)) {
-                    $xml_encoding = $res[1];
-                    if (strtoupper($xml_encoding) != $encoding) {
-                        $err = "Charset from HTTP Content-Type '" . $encoding . "' does not match encoding from XML declaration '" . $xml_encoding . "'";
-                        $this->debug($err);
-                        if ($encoding != 'ISO-8859-1' || strtoupper($xml_encoding) != 'UTF-8') {
-                            $this->setError($err);
-                            return;
-                        }
-                        // when HTTP says ISO-8859-1 (the default) and XML says UTF-8 (the typical), assume the other endpoint is just sloppy and proceed
-                    } else {
-                        $this->debug('Charset from HTTP Content-Type matches encoding from XML declaration');
-                    }
-                } else {
-                    $this->debug('No encoding specified in XML declaration');
-                }
-            } else {
-                $this->debug('No XML declaration');
-            }
-            $this->debug('Entering nusoap_parser(), length=' . strlen($xml) . ', encoding=' . $encoding);
-            // Create an XML parser - why not xml_parser_create_ns?
-            $this->parser = xml_parser_create($this->xml_encoding);
-            // Set the options for parsing the XML data.
-            //xml_parser_set_option($parser, XML_OPTION_SKIP_WHITE, 1);
-            xml_parser_set_option($this->parser, XML_OPTION_CASE_FOLDING, 0);
-            xml_parser_set_option($this->parser, XML_OPTION_TARGET_ENCODING, $this->xml_encoding);
-            // Set the object for the parser.
-            xml_set_object($this->parser, $this);
-            // Set the element handlers for the parser.
-            xml_set_element_handler($this->parser, 'start_element', 'end_element');
-            xml_set_character_data_handler($this->parser, 'character_data');
-
-            // Parse the XML file.
-            if (!xml_parse($this->parser, $xml, true)) {
-                // Display an error message.
-                $err = sprintf('XML error parsing SOAP payload on line %d: %s',
-                    xml_get_current_line_number($this->parser),
-                    xml_error_string(xml_get_error_code($this->parser)));
-                $this->debug($err);
-                $this->debug("XML payload:\n" . $xml);
-                $this->setError($err);
-            } else {
-                $this->debug('in nusoap_parser ctor, message:');
-                $this->appendDebug($this->varDump($this->message));
-                $this->debug('parsed successfully, found root struct: ' . $this->root_struct . ' of name ' . $this->root_struct_name);
-                // get final value
-                $this->soapresponse = $this->message[$this->root_struct]['result'];
-                // get header value
-                if ($this->root_header != '' && isset($this->message[$this->root_header]['result'])) {
-                    $this->soapheader = $this->message[$this->root_header]['result'];
-                }
-                // resolve hrefs/ids
-                if (sizeof($this->multirefs) > 0) {
-                    foreach ($this->multirefs as $id => $hrefs) {
-                        $this->debug('resolving multirefs for id: ' . $id);
-                        $idVal = $this->buildVal($this->ids[$id]);
-                        if (is_array($idVal) && isset($idVal['!id'])) {
-                            unset($idVal['!id']);
-                        }
-                        foreach ($hrefs as $refPos => $ref) {
-                            $this->debug('resolving href at pos ' . $refPos);
-                            $this->multirefs[$id][$refPos] = $idVal;
-                        }
-                    }
-                }
-            }
-            xml_parser_free($this->parser);
-        } else {
-            $this->debug('xml was empty, didn\'t parse!');
-            $this->setError('xml was empty, didn\'t parse!');
-        }
+        $this->parse($xml, $encoding);
     }
 
     /**
@@ -638,6 +562,94 @@ class Parser extends NuSoap
             $ret = $this->message[$pos]['cdata'];
             $this->debug("in buildVal, return: $ret");
             return $ret;
+        }
+    }
+
+    /**
+     * @param string $xml
+     * @param string $encoding
+     * @return void
+     */
+    public function parse($xml, $encoding): void
+    {
+        // Check whether content has been read.
+        if (!empty($xml)) {
+            // Check XML encoding
+            $pos_xml = strpos($xml, '<?xml');
+            if ($pos_xml !== FALSE) {
+                $xml_decl = substr($xml, $pos_xml, strpos($xml, '?>', $pos_xml + 2) - $pos_xml + 1);
+                if (preg_match("/encoding=[\"']([^\"']*)[\"']/", $xml_decl, $res)) {
+                    $xml_encoding = $res[1];
+                    if (strtoupper($xml_encoding) != $encoding) {
+                        $err = "Charset from HTTP Content-Type '" . $encoding . "' does not match encoding from XML declaration '" . $xml_encoding . "'";
+                        $this->debug($err);
+                        if ($encoding != 'ISO-8859-1' || strtoupper($xml_encoding) != 'UTF-8') {
+                            $this->setError($err);
+                            return;
+                        }
+                        // when HTTP says ISO-8859-1 (the default) and XML says UTF-8 (the typical), assume the other endpoint is just sloppy and proceed
+                    } else {
+                        $this->debug('Charset from HTTP Content-Type matches encoding from XML declaration');
+                    }
+                } else {
+                    $this->debug('No encoding specified in XML declaration');
+                }
+            } else {
+                $this->debug('No XML declaration');
+            }
+
+            $this->debug('Entering nusoap_parser(), length=' . strlen($xml) . ', encoding=' . $encoding);
+            // Create an XML parser - why not xml_parser_create_ns?
+            $this->parser = xml_parser_create($this->xml_encoding);
+            // Set the options for parsing the XML data.
+            //xml_parser_set_option($parser, XML_OPTION_SKIP_WHITE, 1);
+            xml_parser_set_option($this->parser, XML_OPTION_CASE_FOLDING, 0);
+            xml_parser_set_option($this->parser, XML_OPTION_TARGET_ENCODING, $this->xml_encoding);
+            // Set the object for the parser.
+            xml_set_object($this->parser, $this);
+            // Set the element handlers for the parser.
+            xml_set_element_handler($this->parser, 'start_element', 'end_element');
+            xml_set_character_data_handler($this->parser, 'character_data');
+
+            // Parse the XML file.
+            if (!xml_parse($this->parser, $xml, true)) {
+                // Display an error message.
+                $err = sprintf('XML error parsing SOAP payload on line %d: %s',
+                    xml_get_current_line_number($this->parser),
+                    xml_error_string(xml_get_error_code($this->parser)));
+                $this->debug($err);
+                $this->debug("XML payload:\n" . $xml);
+                $this->setError($err);
+            } else {
+                $this->debug('in nusoap_parser ctor, message:');
+                $this->appendDebug($this->varDump($this->message));
+                $this->debug('parsed successfully, found root struct: ' . $this->root_struct . ' of name ' . $this->root_struct_name);
+                // get final value
+                $this->soapresponse = $this->message[$this->root_struct]['result'];
+                // get header value
+                if ($this->root_header != '' && isset($this->message[$this->root_header]['result'])) {
+                    $this->soapheader = $this->message[$this->root_header]['result'];
+                }
+                // resolve hrefs/ids
+                if (sizeof($this->multirefs) > 0) {
+                    foreach ($this->multirefs as $id => $hrefs) {
+                        $this->debug('resolving multirefs for id: ' . $id);
+                        $idVal = $this->buildVal($this->ids[$id]);
+                        if (is_array($idVal) && isset($idVal['!id'])) {
+                            unset($idVal['!id']);
+                        }
+                        foreach ($hrefs as $refPos => $ref) {
+                            $this->debug('resolving href at pos ' . $refPos);
+                            $this->multirefs[$id][$refPos] = $idVal;
+                        }
+                    }
+                }
+            }
+
+            xml_parser_free($this->parser);
+        } else {
+            $this->debug('xml was empty, didn\'t parse!');
+            $this->setError('xml was empty, didn\'t parse!');
         }
     }
 }

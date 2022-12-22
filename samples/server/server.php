@@ -5,59 +5,21 @@ use NuSoap\Wsdl\Style;
 
 require_once '../../vendor/autoload.php';
 
-require_once './MyClassThatDenifineMyWebServiceMethods.php';
+require_once './myFunctions.php';
 
-
-$urn = 'urn:localhost';
 
 $server = new Server();
-$server->configureWsdl('nusoap', $urn);
-$server->wsdl->schemaTargetNamespace = $urn;
+$server->configureWsdl('nusoap', 'localhost');
+$server->wsdl->schemaTargetNamespace = 'http://localhost';
 
 $server->soap_defencoding = 'UTF-8';
 $server->decode_utf8  = false;
 $server->encode_utf8  = true;
 
-$server->wsdl->addComplexType(
-    'Item',
-    'complexType',
-    'struct',
-    'all',
-    '',
-    [
-        'id' => ['name' => 'id', 'type' => 'xsd:int'],
-        'title'=> ['name' => 'title', 'type' => 'xsd:string'],
-        'body'=> ['name' => 'body', 'type' => 'xsd:string'],
-        'created'=> ['name' => 'created', 'type' => 'xsd:string'],
-        'last_update' => ['name' => 'last_update', 'type' => 'xsd:string']
-    ]
-);
-
-$server->register('read',
-    [  // request
-        'ws_user' => 'xsd:string',     // required
-        'ws_pass' => 'xsd:string',     // required
-        'id'      => 'xsd:int'         // opcional
-    ],
-    [  // response
-        'Success' => 'xsd:boolean',
-        'Message' => 'xsd:string',
-        'Rows'    => 'xsd:int',
-        'List'    => 'tns:List'
-    ],
-    'urn:wsNotes',                   // namespace
-    'urn:wsNotes#List',              // accion SOAP
-    Style::RPC,                           // estilo
-    'encoded',                       // tipo de uso
-    'Obtiene las notas registradas'  // documentacion
-);
-
 foreach (get_class_methods(MyClassThatDenifineMyWebServiceMethods::class) as $method) {
     if (strstr($method, '__construct')) {
         continue;
     }
-
-
 
     $refletionMethod = new ReflectionMethod(MyClassThatDenifineMyWebServiceMethods::class, $method);
 
@@ -69,20 +31,21 @@ foreach (get_class_methods(MyClassThatDenifineMyWebServiceMethods::class) as $me
         }
 
 
+
+        $host = $_SERVER['SERVER_NAME'];
+
         $server->register(
-            'demonstration',
+            $method,
             $params,
             ['return' => 'xsd:string'],
-            $urn,
-            "$urn#a",
+            "urn:$host",
+            "urn:$host#$method",
             Style::RPC,
             'encoded'
         );
     }
 
 }
-
-$HTTP_RAW_POST_DATA = $HTTP_RAW_POST_DATA ?? '';
 
 $server->service(file_get_contents('php://input'));
 

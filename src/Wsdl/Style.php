@@ -4,6 +4,6 @@ namespace NuSoap\Wsdl;
 
 class Style
 {
-    public const  RPC = 'rcp';
+    public const  RPC = 'rpc';
     public const DOCUMENT = 'document';
 }

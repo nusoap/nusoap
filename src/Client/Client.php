@@ -3,7 +3,7 @@
 namespace NuSoap\Client;
 
 
-use NuSoap\fault;
+use NuSoap\Fault\fault;
 use NuSoap\faultcode;
 use NuSoap\faultdetail;
 use NuSoap\faultstring;
