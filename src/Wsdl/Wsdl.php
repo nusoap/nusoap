@@ -811,7 +811,7 @@ class Wsdl extends NuSoap
 		    a:hover     { color: cc3300; font-weight: bold; }
 		</style>
 		<script language="JavaScript" type="text/javascript">
-		<!--
+		
 		// POP-UP CAPTIONS...
 		function lib_bwcheck(){ //Browsercheck (needed)
 		    this.ver=navigator.appVersion
@@ -1956,5 +1956,3 @@ class Wsdl extends NuSoap
         return true;
     }
 }
-
-?>

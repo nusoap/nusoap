@@ -26,14 +26,14 @@ class Parser extends NuSoap
     public $position = 0;
     public $depth = 0;
     public $default_namespace = '';
-    public $namespaces = array();
-    public $message = array();
+    public $namespaces = [];
+    public $message = [];
     public $parent = '';
     public $fault = false;
     public $fault_code = '';
     public $fault_str = '';
     public $fault_detail = '';
-    public $depth_array = array();
+    public $depth_array = [];
     public $debug_flag = true;
     public $soapresponse = NULL;    // parsed SOAP Body
     public $soapheader = NULL;        // parsed SOAP Header
@@ -41,9 +41,9 @@ class Parser extends NuSoap
     public $body_position = 0;
     // for multiref parsing:
     // array of id => pos
-    public $ids = array();
+    public $ids = [];
     // array of id => hrefs => pos
-    public $multirefs = array();
+    public $multirefs = [];
     // toggle for auto-decoding element content
     public $decode_utf8 = true;
 
@@ -208,6 +208,7 @@ class Parser extends NuSoap
             // for doclit
             $attstr .= " $key=\"$value\"";
         }
+
         // get namespace - must be done after namespace atts are processed
         if (isset($prefix)) {
             $this->message[$pos]['namespace'] = $this->namespaces[$prefix];
@@ -215,6 +216,7 @@ class Parser extends NuSoap
         } else {
             $this->message[$pos]['namespace'] = $this->default_namespace;
         }
+
         if ($this->status == 'header') {
             if ($this->root_header != $pos) {
                 $this->responseHeaders .= "<" . (isset($prefix) ? $prefix . ':' : '') . "$name$attstr>";

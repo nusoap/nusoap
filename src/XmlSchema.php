@@ -846,6 +846,8 @@ class XmlSchema extends NuSoap
      */
     function typeToForm($name, $type)
     {
+        $buffer = '';
+
         // get typedef
         if ($typeDef = $this->getTypeDef($type)) {
             // if struct
@@ -873,6 +875,7 @@ class XmlSchema extends NuSoap
         } else {
             $buffer .= "<input type='text' name='parameters[$name]'>";
         }
+
         return $buffer;
     }
 
@@ -979,10 +982,3 @@ class XmlSchema extends NuSoap
         $this->appendDebug($this->varDump($this->elements[$attrs['name']]));
     }
 }
-
-/**
- * Backward compatibility
- */
-//class XMLSchema extends XmlSchema {
-//}
-

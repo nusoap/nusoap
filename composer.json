@@ -23,6 +23,8 @@
     }
   ],
   "require": {
+    "ext-xml": "*",
+    "ext-curl": "*"
   },
   "autoload": {
     "psr-4": {
