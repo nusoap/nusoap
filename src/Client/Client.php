@@ -2,10 +2,10 @@
 
 namespace NuSoap\Client;
 
-use NuSoap\Fault\fault;
+use NuSoap\Common\Fault\fault;
+use NuSoap\Common\TransportHttp;
 use NuSoap\NuSoap;
-use NuSoap\Parser;
-use NuSoap\TransportHttp;
+use NuSoap\Parser\Parser;
 use NuSoap\Wsdl\Wsdl;
 
 /**

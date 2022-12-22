@@ -1,6 +1,8 @@
 <?php
 
-namespace NuSoap;
+namespace NuSoap\Common;
+
+use NuSoap\NuSoap;
 
 /**
  * transport class for sending/receiving data via HTTP and HTTPS
@@ -262,26 +264,31 @@ class TransportHttp extends NuSoap
             } else {
                 $CURLOPT_CONNECTIONTIMEOUT = 78;
             }
+
             if (defined('CURLOPT_HTTPAUTH')) {
                 $CURLOPT_HTTPAUTH = CURLOPT_HTTPAUTH;
             } else {
                 $CURLOPT_HTTPAUTH = 107;
             }
+
             if (defined('CURLOPT_PROXYAUTH')) {
                 $CURLOPT_PROXYAUTH = CURLOPT_PROXYAUTH;
             } else {
                 $CURLOPT_PROXYAUTH = 111;
             }
+
             if (defined('CURLAUTH_BASIC')) {
                 $CURLAUTH_BASIC = CURLAUTH_BASIC;
             } else {
                 $CURLAUTH_BASIC = 1;
             }
+
             if (defined('CURLAUTH_DIGEST')) {
                 $CURLAUTH_DIGEST = CURLAUTH_DIGEST;
             } else {
                 $CURLAUTH_DIGEST = 2;
             }
+
             if (defined('CURLAUTH_NTLM')) {
                 $CURLAUTH_NTLM = CURLAUTH_NTLM;
             } else {
@@ -344,29 +351,36 @@ class TransportHttp extends NuSoap
 
                 // support client certificates (thanks Tobias Boes, Doug Anarino, Eryan Ariobowo)
                 if ($this->authtype == 'certificate') {
+
                     $this->debug('set cURL certificate options');
                     if (isset($this->certRequest['cainfofile'])) {
                         $this->setCurlOption(CURLOPT_CAINFO, $this->certRequest['cainfofile']);
                     }
+
                     if (isset($this->certRequest['verifypeer'])) {
                         $this->setCurlOption(CURLOPT_SSL_VERIFYPEER, $this->certRequest['verifypeer']);
                     } else {
                         $this->setCurlOption(CURLOPT_SSL_VERIFYPEER, 1);
                     }
+
                     if (isset($this->certRequest['verifyhost'])) {
                         $this->setCurlOption(CURLOPT_SSL_VERIFYHOST, $this->certRequest['verifyhost']);
                     } else {
                         $this->setCurlOption(CURLOPT_SSL_VERIFYHOST, 1);
                     }
+
                     if (isset($this->certRequest['sslcertfile'])) {
                         $this->setCurlOption(CURLOPT_SSLCERT, $this->certRequest['sslcertfile']);
                     }
+
                     if (isset($this->certRequest['sslkeyfile'])) {
                         $this->setCurlOption(CURLOPT_SSLKEY, $this->certRequest['sslkeyfile']);
                     }
+
                     if (isset($this->certRequest['passphrase'])) {
                         $this->setCurlOption(CURLOPT_SSLKEYPASSWD, $this->certRequest['passphrase']);
                     }
+
                     if (isset($this->certRequest['certpassword'])) {
                         $this->setCurlOption(CURLOPT_SSLCERTPASSWD, $this->certRequest['certpassword']);
                     }

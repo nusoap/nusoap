@@ -2,9 +2,9 @@
 
 namespace NuSoap\Wsdl;
 
+use NuSoap\Common\TransportHttp;
+use NuSoap\Common\XmlSchema;
 use NuSoap\NuSoap;
-use NuSoap\TransportHttp;
-use NuSoap\XmlSchema;
 
 /**
  * parses a WSDL file, allows access to it's data, other utility methods.

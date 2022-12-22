@@ -1,6 +1,6 @@
 <?php
 
-namespace NuSoap\Fault;
+namespace NuSoap\Common\Fault;
 
 use NuSoap\NuSoap;
 

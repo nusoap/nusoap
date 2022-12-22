@@ -2,13 +2,13 @@
 
 namespace NuSoap\Server;
 
-use NuSoap\Fault\Code;
-use NuSoap\Fault\Fault;
+use NuSoap\Common\Fault\Code;
+use NuSoap\Common\Fault\Fault;
+use NuSoap\Common\XmlSchema;
 use NuSoap\NuSoap;
-use NuSoap\Parser;
+use NuSoap\Parser\Parser;
 use NuSoap\Wsdl\Style;
 use NuSoap\Wsdl\Wsdl;
-use NuSoap\XmlSchema;
 
 /**
  *

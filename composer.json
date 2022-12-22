@@ -36,7 +36,7 @@
       "NuSoap\\": "src/"
     },
     "files": [
-      "src/helpers.php"
+      "src/Common/files/helpers.php"
     ]
   },
   "require-dev": {

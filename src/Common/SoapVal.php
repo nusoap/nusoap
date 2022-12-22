@@ -1,6 +1,8 @@
 <?php
 
-namespace NuSoap;
+namespace NuSoap\Common;
+
+use NuSoap\NuSoap;
 
 /**
  * For creating serializable abstractions of native PHP types.  This class

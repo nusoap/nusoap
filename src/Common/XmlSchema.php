@@ -1,6 +1,18 @@
 <?php
 
-namespace NuSoap;
+namespace NuSoap\Common;
+use NuSoap\NuSoap;
+
+//use NuSoap\arrayType;
+//use NuSoap\attrs;
+//use NuSoap\compositor;
+//use NuSoap\elements;
+//use NuSoap\name;
+//use NuSoap\phpType;
+//use NuSoap\restrictionBase;
+//use NuSoap\typeClass;
+//use function NuSoap\count;
+//use function NuSoap\sizeof;
 
 /**
  * parses an XML Schema, allows access to it's data, other utility methods.

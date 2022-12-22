@@ -1,6 +1,8 @@
 <?php
 
-namespace NuSoap;
+namespace NuSoap\Parser;
+
+use NuSoap\NuSoap;
 
 /**
  *
