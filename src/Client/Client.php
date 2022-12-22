@@ -30,14 +30,13 @@ use NuSoap\Wsdl\Wsdl;
  */
 class Client extends NuSoap
 {
-
     public $username = '';                // Username for HTTP authentication
     public $password = '';                // Password for HTTP authentication
     public $authtype = '';                // Type of HTTP authentication
     public $certRequest = array();        // Certificate for HTTP SSL authentication
     public $requestHeaders = false;    // SOAP headers in request (text)
     public $responseHeaders = '';        // SOAP headers from response (incomplete namespace resolution) (text)
-    public $responseHeader = NULL;        // SOAP Header from response (parsed)
+    public $responseHeader = null;        // SOAP Header from response (parsed)
     public $document = '';                // SOAP body response portion (incomplete namespace resolution) (text)
     public $endpoint;
     public $forceEndpoint = '';        // overrides WSDL endpoint
@@ -187,8 +186,9 @@ class Client extends NuSoap
         }
         if ($this->endpointType == 'wsdl' && is_null($this->wsdl)) {
             $this->loadWSDL();
-            if ($this->getError())
+            if ($this->getError()) {
                 return false;
+            }
         }
         // serialize parameters
         if ($this->endpointType == 'wsdl' && $opData = $this->getOperationData($operation)) {
@@ -405,8 +405,9 @@ class Client extends NuSoap
     {
         if ($this->endpointType == 'wsdl' && is_null($this->wsdl)) {
             $this->loadWSDL();
-            if ($this->getError())
+            if ($this->getError()) {
                 return false;
+            }
         }
         if (isset($this->operations[$operation])) {
             return $this->operations[$operation];

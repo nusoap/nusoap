@@ -62,7 +62,7 @@ class WsdlCache
      * @return string The filename used to cache the instance
      * @access private
      */
-    function createFilename($wsdl)
+    public function createFilename($wsdl)
     {
         return $this->cache_dir . '/wsdlcache-' . md5($wsdl);
     }
@@ -73,7 +73,7 @@ class WsdlCache
      * @param string $string debug data
      * @access   private
      */
-    function debug($string)
+    public function debug($string)
     {
         $this->debug_str .= get_class($this) . ": $string\n";
     }
@@ -85,7 +85,7 @@ class WsdlCache
      * @return object wsdl The cached wsdl instance, null if the instance is not in the cache
      * @access public
      */
-    function get($wsdl)
+    public function get($wsdl)
     {
         $filename = $this->createFilename($wsdl);
         if ($this->obtainMutex($filename, "r")) {
@@ -129,7 +129,7 @@ class WsdlCache
      * @return boolean Lock successfully obtained ?!
      * @access private
      */
-    function obtainMutex($filename, $mode)
+    public function obtainMutex($filename, $mode)
     {
         if (isset($this->fplock[md5($filename)])) {
             $this->debug("Lock for $filename already exists");
@@ -150,7 +150,7 @@ class WsdlCache
      * @return boolean WSDL successfully cached
      * @access public
      */
-    function put($wsdl_instance)
+    public function put($wsdl_instance)
     {
         $filename = $this->createFilename($wsdl_instance->wsdl);
         $s = serialize($wsdl_instance);
@@ -179,7 +179,7 @@ class WsdlCache
      * @return boolean Lock successfully released
      * @access private
      */
-    function releaseMutex($filename)
+    public function releaseMutex($filename)
     {
         $ret = flock($this->fplock[md5($filename)], LOCK_UN);
         fclose($this->fplock[md5($filename)]);
@@ -197,7 +197,7 @@ class WsdlCache
      * @return boolean Whether there was an instance to remove
      * @access public
      */
-    function remove($wsdl)
+    public function remove($wsdl)
     {
         $filename = $this->createFilename($wsdl);
         if (!file_exists($filename)) {

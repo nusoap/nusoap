@@ -62,7 +62,7 @@ class Fault extends NuSoap
      * @return    string    The serialization of the fault instance.
      * @access   public
      */
-    function serialize()
+    public function serialize()
     {
         $ns_string = '';
 

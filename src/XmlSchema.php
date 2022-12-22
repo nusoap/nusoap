@@ -13,7 +13,6 @@ namespace NuSoap;
  */
 class XmlSchema extends NuSoap
 {
-
     // files
     public $schema = '';
     public $xml = '';
@@ -75,7 +74,6 @@ class XmlSchema extends NuSoap
             $this->debug('initial xml file: ' . $xml);
             $this->parseFile($xml, 'xml');
         }
-
     }
 
     /**
@@ -117,7 +115,6 @@ class XmlSchema extends NuSoap
     {
         // parse xml string
         if ($xml != "") {
-
             // Create an XML parser.
             $this->parser = xml_parser_create();
             // Set the options for parsing the XML data.
@@ -138,7 +135,8 @@ class XmlSchema extends NuSoap
             // Parse the XML file.
             if (!xml_parse($this->parser, $xml, true)) {
                 // Display an error message.
-                $errstr = sprintf('XML error parsing XML schema on line %d: %s',
+                $errstr = sprintf(
+                    'XML error parsing XML schema on line %d: %s',
                     xml_get_current_line_number($this->parser),
                     xml_error_string(xml_get_error_code($this->parser))
                 );
@@ -242,7 +240,7 @@ class XmlSchema extends NuSoap
                 //$this->xdebug("compositor $name for currentComplexType: $this->currentComplexType and currentElement: $this->currentElement");
                 $this->complexTypes[$this->currentComplexType]['compositor'] = $name;
                 //if($name == 'all' || $name == 'sequence'){
-                //	$this->complexTypes[$this->currentComplexType]['phpType'] = 'struct';
+                //  $this->complexTypes[$this->currentComplexType]['phpType'] = 'struct';
                 //}
                 break;
             case 'attribute':    // complexType attribute
@@ -399,7 +397,7 @@ class XmlSchema extends NuSoap
                     $this->elements[$attrs['name']]['typeClass'] = 'element';
                 }
                 break;
-            case 'enumeration':    //	restriction value list member
+            case 'enumeration':    //   restriction value list member
                 $this->xdebug('enumeration ' . $attrs['value']);
                 if ($this->currentSimpleType) {
                     $this->simpleTypes[$this->currentSimpleType]['enumeration'][] = $attrs['value'];

@@ -46,7 +46,7 @@ class Server extends NuSoap
      * @var mixed
      * @access public
      */
-    public $requestHeader = NULL;
+    public $requestHeader = null;
     /**
      * SOAP body request portion (incomplete namespace resolution; special characters not escaped) (text)
      * @var string
@@ -374,7 +374,7 @@ class Server extends NuSoap
                     $v = str_replace('"', '', $v);
                     $v = str_replace('\\', '', $v);
                     $this->SOAPAction = $v;
-                } else if ($k == 'content-type') {
+                } elseif ($k == 'content-type') {
                     // get the character encoding of the incoming request
                     if (strpos($v, '=')) {
                         $enc = substr(strstr($v, '='), 1);
@@ -410,7 +410,7 @@ class Server extends NuSoap
                     $v = str_replace('"', '', $v);
                     $v = str_replace('\\', '', $v);
                     $this->SOAPAction = $v;
-                } else if ($k == 'content-type') {
+                } elseif ($k == 'content-type') {
                     // get the character encoding of the incoming request
                     if (strpos($v, '=')) {
                         $enc = substr(strstr($v, '='), 1);
@@ -544,7 +544,7 @@ class Server extends NuSoap
         // to allow methods to be called a the class or an instance
         if (strpos($this->methodname, '..') > 0) {
             $delim = '..';
-        } else if (strpos($this->methodname, '.') > 0) {
+        } elseif (strpos($this->methodname, '.') > 0) {
             $delim = '.';
         } else {
             $delim = '';
@@ -639,7 +639,7 @@ class Server extends NuSoap
                 $call_arg = array($class, $method);
             } else {
                 $this->debug('in invoke_method, calling instance method using call_user_func_array()');
-                $instance = new $class ();
+                $instance = new $class();
                 $call_arg = array(&$instance, $method);
             }
             if (is_array($this->methodparams)) {
@@ -686,7 +686,7 @@ class Server extends NuSoap
                     $this->debug('exactly one output part, so wrap the method return in a simple array');
                     // TODO: verify that it is not already wrapped!
                     //foreach ($this->opData['output']['parts'] as $name => $type) {
-                    //	$this->debug('wrap in element named ' . $name);
+                    //  $this->debug('wrap in element named ' . $name);
                     //}
                     $opParams = array($this->methodreturn);
                 }
@@ -741,7 +741,7 @@ class Server extends NuSoap
         if ($this->wsdl) {
             //if($this->debug_flag){
             $this->appendDebug($this->wsdl->getDebug());
-            //	}
+            //  }
             if (isset($this->opData['output']['encodingStyle'])) {
                 $encodingStyle = $this->opData['output']['encodingStyle'];
             } else {
@@ -1134,7 +1134,7 @@ class Server extends NuSoap
             $schemaTargetNamespace = $namespace;
         }
 
-        $this->wsdl = new Wsdl;
+        $this->wsdl = new Wsdl();
         $this->wsdl->serviceName = $serviceName;
         $this->wsdl->endpoint = $endpoint;
         $this->wsdl->namespaces['tns'] = $namespace;

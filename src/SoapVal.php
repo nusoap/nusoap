@@ -2,7 +2,6 @@
 
 namespace NuSoap;
 
-
 /**
  * For creating serializable abstractions of native PHP types.  This class
  * allows element name/namespace, XSD type, and XML attributes to be
@@ -22,42 +21,47 @@ class SoapVal extends NuSoap
      * @var string
      * @access private
      */
-    var $name;
+    public $name;
+
     /**
      * The XML type name (string or false)
      *
      * @var mixed
      * @access private
      */
-    var $type;
+    public $type;
+
     /**
      * The PHP value
      *
      * @var mixed
      * @access private
      */
-    var $value;
+    public $value;
+
     /**
      * The XML element namespace (string or false)
      *
      * @var mixed
      * @access private
      */
-    var $element_ns;
+    public $element_ns;
+
     /**
      * The XML type namespace (string or false)
      *
      * @var mixed
      * @access private
      */
-    var $type_ns;
+    public $type_ns;
+
     /**
      * The XML element attributes (array or false)
      *
      * @var mixed
      * @access private
      */
-    var $attributes;
+    public $attributes;
 
     /**
      * constructor
@@ -88,9 +92,18 @@ class SoapVal extends NuSoap
      * @return    string XML data
      * @access   public
      */
-    function serialize($use = 'encoded')
+    public function serialize($use = 'encoded')
     {
-        return $this->serialize_val($this->value, $this->name, $this->type, $this->element_ns, $this->type_ns, $this->attributes, $use, true);
+        return $this->serialize_val(
+            $this->value,
+            $this->name,
+            $this->type,
+            $this->element_ns,
+            $this->type_ns,
+            $this->attributes,
+            $use,
+            true
+        );
     }
 
     /**
@@ -99,7 +112,7 @@ class SoapVal extends NuSoap
      * @return    mixed
      * @access   public
      */
-    function decode()
+    public function decode()
     {
         return $this->value;
     }

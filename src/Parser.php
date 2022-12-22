@@ -1,6 +1,7 @@
 <?php
 
 namespace NuSoap;
+
 /**
  *
  * nusoap_parser class parses SOAP XML messages into native PHP values
@@ -12,7 +13,6 @@ namespace NuSoap;
  */
 class Parser extends NuSoap
 {
-
     public $xml = '';
     public $xml_encoding = '';
     public $method = '';
@@ -35,8 +35,8 @@ class Parser extends NuSoap
     public $fault_detail = '';
     public $depth_array = [];
     public $debug_flag = true;
-    public $soapresponse = NULL;    // parsed SOAP Body
-    public $soapheader = NULL;        // parsed SOAP Header
+    public $soapresponse = null;    // parsed SOAP Body
+    public $soapheader = null;        // parsed SOAP Header
     public $responseHeaders = '';    // incoming SOAP headers (text)
     public $body_position = 0;
     // for multiref parsing:
@@ -75,7 +75,7 @@ class Parser extends NuSoap
      * @param array $attrs associative array of attributes
      * @access   private
      */
-    function start_element($parser, $name, $attrs)
+    public function start_element($parser, $name, $attrs)
     {
         // position in a total number of elements, starting from 0
         // update class level pos
@@ -155,7 +155,7 @@ class Parser extends NuSoap
                     $this->message[$pos]['typePrefix'] = $value_prefix;
                     if (isset($this->namespaces[$value_prefix])) {
                         $this->message[$pos]['type_namespace'] = $this->namespaces[$value_prefix];
-                    } else if (isset($attrs['xmlns:' . $value_prefix])) {
+                    } elseif (isset($attrs['xmlns:' . $value_prefix])) {
                         $this->message[$pos]['type_namespace'] = $attrs['xmlns:' . $value_prefix];
                     }
                     // should do something here with the namespace of specified type?
@@ -176,7 +176,7 @@ class Parser extends NuSoap
                     $this->message[$pos]['arrayTypePrefix'] = $regs[1];
                     if (isset($this->namespaces[$regs[1]])) {
                         $this->message[$pos]['arrayTypeNamespace'] = $this->namespaces[$regs[1]];
-                    } else if (isset($attrs['xmlns:' . $regs[1]])) {
+                    } elseif (isset($attrs['xmlns:' . $regs[1]])) {
                         $this->message[$pos]['arrayTypeNamespace'] = $attrs['xmlns:' . $regs[1]];
                     }
                     $this->message[$pos]['arrayType'] = $regs[2];
@@ -233,7 +233,7 @@ class Parser extends NuSoap
      * @param string $name element name
      * @access   private
      */
-    function end_element($parser, $name)
+    public function end_element($parser, $name)
     {
         // position of current element is equal to the last value left in depth_array for my depth
         $pos = $this->depth_array[$this->depth--];
@@ -316,6 +316,7 @@ class Parser extends NuSoap
         } elseif ($pos >= $this->root_struct) {
             $this->document .= "</" . (isset($prefix) ? $prefix . ':' : '') . "$name>";
         }
+
         // switch status
         if ($pos == $this->root_struct) {
             $this->status = 'body';
@@ -329,6 +330,7 @@ class Parser extends NuSoap
         } elseif ($name == 'Envelope' && $this->status == 'envelope') {
             $this->status = '';
         }
+
         // set parent back to my parent
         $this->parent = $this->message[$pos]['parent'];
     }
@@ -340,7 +342,7 @@ class Parser extends NuSoap
      * @param string $data element content
      * @access   private
      */
-    function character_data($parser, $data)
+    public function character_data($parser, $data)
     {
         $pos = $this->depth_array[$this->depth];
         if ($this->xml_encoding == 'UTF-8') {
@@ -367,7 +369,7 @@ class Parser extends NuSoap
      * @access   public
      * @deprecated    use get_soapbody instead
      */
-    function get_response()
+    public function get_response()
     {
         return $this->soapresponse;
     }
@@ -378,7 +380,7 @@ class Parser extends NuSoap
      * @return    mixed
      * @access   public
      */
-    function get_soapbody()
+    public function get_soapbody()
     {
         return $this->soapresponse;
     }
@@ -389,7 +391,7 @@ class Parser extends NuSoap
      * @return    mixed
      * @access   public
      */
-    function get_soapheader()
+    public function get_soapheader()
     {
         return $this->soapheader;
     }
@@ -400,7 +402,7 @@ class Parser extends NuSoap
      * @return    string XML or empty if no Header
      * @access   public
      */
-    function getHeaders()
+    public function getHeaders()
     {
         return $this->responseHeaders;
     }
@@ -414,41 +416,51 @@ class Parser extends NuSoap
      * @return    mixed PHP value
      * @access   private
      */
-    function decodeSimple($value, $type, $typens)
+    public function decodeSimple($value, $type, $typens)
     {
         // TODO: use the namespace!
         if ((!isset($type)) || $type == 'string' || $type == 'long' || $type == 'unsignedLong') {
-            return (string)$value;
+            return (string) $value;
         }
+
         if ($type == 'int' || $type == 'integer' || $type == 'short' || $type == 'byte') {
-            return (int)$value;
+            return (int) $value;
         }
+
         if ($type == 'float' || $type == 'double' || $type == 'decimal') {
-            return (double)$value;
+            return (double) $value;
         }
+
         if ($type == 'boolean') {
             if (strtolower($value) == 'false' || strtolower($value) == 'f') {
                 return false;
             }
-            return (boolean)$value;
+
+            return (bool) $value;
         }
+
         if ($type == 'base64' || $type == 'base64Binary') {
             $this->debug('Decode base64 value');
             return base64_decode($value);
         }
+
         // obscure numeric types
-        if ($type == 'nonPositiveInteger' || $type == 'negativeInteger'
+        if (
+            $type == 'nonPositiveInteger' || $type == 'negativeInteger'
             || $type == 'nonNegativeInteger' || $type == 'positiveInteger'
             || $type == 'unsignedInt'
-            || $type == 'unsignedShort' || $type == 'unsignedByte') {
-            return (int)$value;
+            || $type == 'unsignedShort' || $type == 'unsignedByte'
+        ) {
+            return (int) $value;
         }
+
         // bogus: parser treats array with no elements as a simple type
         if ($type == 'array') {
-            return array();
+            return [];
         }
+
         // everything else
-        return (string)$value;
+        return (string) $value;
     }
 
     /**
@@ -459,7 +471,7 @@ class Parser extends NuSoap
      * @return    mixed    PHP value
      * @access   private
      */
-    function buildVal($pos)
+    public function buildVal($pos)
     {
         if (!isset($this->message[$pos]['type'])) {
             $this->message[$pos]['type'] = '';
@@ -578,7 +590,7 @@ class Parser extends NuSoap
         if (!empty($xml)) {
             // Check XML encoding
             $pos_xml = strpos($xml, '<?xml');
-            if ($pos_xml !== FALSE) {
+            if ($pos_xml !== false) {
                 $xml_decl = substr($xml, $pos_xml, strpos($xml, '?>', $pos_xml + 2) - $pos_xml + 1);
                 if (preg_match("/encoding=[\"']([^\"']*)[\"']/", $xml_decl, $res)) {
                     $xml_encoding = $res[1];
@@ -616,9 +628,11 @@ class Parser extends NuSoap
             // Parse the XML file.
             if (!xml_parse($this->parser, $xml, true)) {
                 // Display an error message.
-                $err = sprintf('XML error parsing SOAP payload on line %d: %s',
+                $err = sprintf(
+                    'XML error parsing SOAP payload on line %d: %s',
                     xml_get_current_line_number($this->parser),
-                    xml_error_string(xml_get_error_code($this->parser)));
+                    xml_error_string(xml_get_error_code($this->parser))
+                );
                 $this->debug($err);
                 $this->debug("XML payload:\n" . $xml);
                 $this->setError($err);

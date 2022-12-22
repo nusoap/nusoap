@@ -2,7 +2,6 @@
 
 namespace NuSoap\Wsdl;
 
-
 use NuSoap\NuSoap;
 use NuSoap\TransportHttp;
 use NuSoap\XmlSchema;
@@ -99,7 +98,7 @@ class Wsdl extends NuSoap
      *
      * @access public
      */
-    function fetchWSDL($wsdl)
+    public function fetchWSDL($wsdl)
     {
         $this->debug("parse and process WSDL path=$wsdl");
         $this->wsdl = $wsdl;
@@ -203,7 +202,7 @@ class Wsdl extends NuSoap
      * @param string $wsdl path or URL
      * @access private
      */
-    function parseWSDL($wsdl = '')
+    public function parseWSDL($wsdl = '')
     {
         $this->debug("parse WSDL at path=$wsdl");
 
@@ -308,7 +307,7 @@ class Wsdl extends NuSoap
      * @param string $attrs associative array of attributes
      * @access private
      */
-    function start_element($parser, $name, $attrs)
+    public function start_element($parser, $name, $attrs)
     {
         if ($this->status == 'schema') {
             $this->currentSchema->schemaStartElement($parser, $name, $attrs);
@@ -475,8 +474,8 @@ class Wsdl extends NuSoap
                     break;
                 //wait for schema
                 //case 'types':
-                //	$this->status = 'schema';
-                //	break;
+                //  $this->status = 'schema';
+                //  break;
                 case 'message':
                     $this->status = 'message';
                     $this->messages[$attrs['name']] = array();
@@ -521,7 +520,7 @@ class Wsdl extends NuSoap
      * @param string $name element name
      * @access private
      */
-    function end_element($parser, $name)
+    public function end_element($parser, $name)
     {
         // unset schema status
         if (/*preg_match('/types$/', $name) ||*/ preg_match('/schema$/', $name)) {
@@ -552,7 +551,7 @@ class Wsdl extends NuSoap
      * @param string $data element content
      * @access private
      */
-    function character_data($parser, $data)
+    public function character_data($parser, $data)
     {
         $pos = isset($this->depth_array[$this->depth]) ? $this->depth_array[$this->depth] : 0;
         if (isset($this->message[$pos]['cdata'])) {
@@ -572,7 +571,7 @@ class Wsdl extends NuSoap
      * @param array $certRequest (keys must be cainfofile (optional), sslcertfile, sslkeyfile, passphrase, certpassword (optional), verifypeer (optional), verifyhost (optional): see corresponding options in cURL docs)
      * @access   public
      */
-    function setCredentials($username, $password, $authtype = 'basic', $certRequest = array())
+    public function setCredentials($username, $password, $authtype = 'basic', $certRequest = array())
     {
         $this->debug("setCredentials username=$username authtype=$authtype certRequest=");
         $this->appendDebug($this->varDump($certRequest));
@@ -582,7 +581,7 @@ class Wsdl extends NuSoap
         $this->certRequest = $certRequest;
     }
 
-    function getBindingData($binding)
+    public function getBindingData($binding)
     {
         if (is_array($this->bindings[$binding])) {
             return $this->bindings[$binding];
@@ -597,7 +596,7 @@ class Wsdl extends NuSoap
      * @return array
      * @access public
      */
-    function getOperations($portName = '', $bindingType = 'soap')
+    public function getOperations($portName = '', $bindingType = 'soap')
     {
         $ops = array();
         if ($bindingType == 'soap') {
@@ -638,7 +637,7 @@ class Wsdl extends NuSoap
      * @return array
      * @access public
      */
-    function getOperationData($operation, $bindingType = 'soap')
+    public function getOperationData($operation, $bindingType = 'soap')
     {
         if ($bindingType == 'soap') {
             $bindingType = 'http://schemas.xmlsoap.org/wsdl/soap/';
@@ -670,7 +669,7 @@ class Wsdl extends NuSoap
      * @return array
      * @access public
      */
-    function getOperationDataForSoapAction($soapAction, $bindingType = 'soap')
+    public function getOperationDataForSoapAction($soapAction, $bindingType = 'soap')
     {
         if ($bindingType == 'soap') {
             $bindingType = 'http://schemas.xmlsoap.org/wsdl/soap/';
@@ -709,7 +708,7 @@ class Wsdl extends NuSoap
      * @access public
      * @see XmlSchema
      */
-    function getTypeDef($type, $ns)
+    public function getTypeDef($type, $ns)
     {
         $this->debug("in getTypeDef: type=$type, ns=$ns");
         if ((!$ns) && isset($this->namespaces['tns'])) {
@@ -770,7 +769,7 @@ class Wsdl extends NuSoap
      *
      * @access private
      */
-    function webDescription()
+    public function webDescription()
     {
         global $HTTP_SERVER_VARS;
 
@@ -905,7 +904,7 @@ class Wsdl extends NuSoap
      * @return string serialization of WSDL
      * @access public
      */
-    function serialize($debug = 0)
+    public function serialize($debug = 0)
     {
         $xml = '<?xml version="1.0" encoding="ISO-8859-1"?>';
         $xml .= "\n<definitions";
@@ -1044,7 +1043,7 @@ class Wsdl extends NuSoap
      * @return boolean whether they parameters are unwrapped (and should be wrapped)
      * @access private
      */
-    function parametersMatchWrapped($type, &$parameters)
+    public function parametersMatchWrapped($type, &$parameters)
     {
         $this->debug("in parametersMatchWrapped type=$type, parameters=");
         $this->appendDebug($this->varDump($parameters));
@@ -1128,7 +1127,7 @@ class Wsdl extends NuSoap
      * @return mixed parameters serialized as XML or false on error (e.g. operation not found)
      * @access public
      */
-    function serializeRPCParameters($operation, $direction, $parameters, $bindingType = 'soap')
+    public function serializeRPCParameters($operation, $direction, $parameters, $bindingType = 'soap')
     {
         $this->debug("in serializeRPCParameters: operation=$operation, direction=$direction, XMLSchemaVersion=$this->XMLSchemaVersion, bindingType=$bindingType");
         $this->appendDebug('parameters=' . $this->varDump($parameters));
@@ -1230,7 +1229,7 @@ class Wsdl extends NuSoap
      * @access public
      * @deprecated
      */
-    function serializeParameters($operation, $direction, $parameters)
+    public function serializeParameters($operation, $direction, $parameters)
     {
         $this->debug("in serializeParameters: operation=$operation, direction=$direction, XMLSchemaVersion=$this->XMLSchemaVersion");
         $this->appendDebug('parameters=' . $this->varDump($parameters));
@@ -1258,7 +1257,6 @@ class Wsdl extends NuSoap
         // set input params
         $xml = '';
         if (isset($opData[$direction]['parts']) && sizeof($opData[$direction]['parts']) > 0) {
-
             $use = $opData[$direction]['use'];
             $this->debug("use=$use");
             $this->debug('got ' . count($opData[$direction]['parts']) . ' part(s)');
@@ -1309,7 +1307,7 @@ class Wsdl extends NuSoap
      * @return string value serialized as an XML string
      * @access private
      */
-    function serializeType($name, $type, $value, $use = 'encoded', $encodingStyle = false, $unqualified = false)
+    public function serializeType($name, $type, $value, $use = 'encoded', $encodingStyle = false, $unqualified = false)
     {
         $this->debug("in serializeType: name=$name, type=$type, use=$use, encodingStyle=$encodingStyle, unqualified=" . ($unqualified ? "unqualified" : "qualified"));
         $this->appendDebug("value=" . $this->varDump($value));
@@ -1409,7 +1407,7 @@ class Wsdl extends NuSoap
                     return $xml;
                 }
                 $this->debug('custom type extends XML Schema or SOAP Encoding namespace (yuck)');
-            } else if ($ns == 'http://xml.apache.org/xml-soap') {
+            } elseif ($ns == 'http://xml.apache.org/xml-soap') {
                 $this->debug('in serializeType: appears to be Apache SOAP type');
                 if ($uqType == 'Map') {
                     $tt_prefix = $this->getPrefixFromNamespace('http://xml.apache.org/xml-soap');
@@ -1628,7 +1626,7 @@ class Wsdl extends NuSoap
      * @return string value serialized as an XML string
      * @access private
      */
-    function serializeComplexTypeAttributes($typeDef, $value, $ns, $uqType)
+    public function serializeComplexTypeAttributes($typeDef, $value, $ns, $uqType)
     {
         $this->debug("serializeComplexTypeAttributes for XML Schema type $ns:$uqType");
         $xml = '';
@@ -1692,7 +1690,7 @@ class Wsdl extends NuSoap
      * @return string value serialized as an XML string
      * @access private
      */
-    function serializeComplexTypeElements($typeDef, $value, $ns, $uqType, $use = 'encoded', $encodingStyle = false)
+    public function serializeComplexTypeElements($typeDef, $value, $ns, $uqType, $use = 'encoded', $encodingStyle = false)
     {
         $this->debug("in serializeComplexTypeElements for XML Schema type $ns:$uqType");
         $xml = '';
@@ -1731,7 +1729,8 @@ class Wsdl extends NuSoap
                     }
                 }
                 // if user took advantage of a minOccurs=0, then only serialize named parameters
-                if (isset($optionals)
+                if (
+                    isset($optionals)
                     && (!isset($xvalue[$eName]))
                     && ((!isset($attrs['nillable'])) || $attrs['nillable'] != 'true')
                 ) {
@@ -1801,7 +1800,7 @@ class Wsdl extends NuSoap
      * @see XmlSchema
      * @access public
      */
-    function addComplexType($name, $typeClass = 'complexType', $phpType = 'array', $compositor = '', $restrictionBase = '', $elements = array(), $attrs = array(), $arrayType = '')
+    public function addComplexType($name, $typeClass = 'complexType', $phpType = 'array', $compositor = '', $restrictionBase = '', $elements = array(), $attrs = array(), $arrayType = '')
     {
         if (count($elements) > 0) {
             $eElements = array();
@@ -1849,7 +1848,7 @@ class Wsdl extends NuSoap
      * @see XmlSchema
      * @access public
      */
-    function addSimpleType($name, $restrictionBase = '', $typeClass = 'simpleType', $phpType = 'scalar', $enumeration = array())
+    public function addSimpleType($name, $restrictionBase = '', $typeClass = 'simpleType', $phpType = 'scalar', $enumeration = array())
     {
         $restrictionBase = strpos($restrictionBase, ':') ? $this->expandQname($restrictionBase) : $restrictionBase;
 
@@ -1864,7 +1863,7 @@ class Wsdl extends NuSoap
      * @see XmlSchema
      * @access public
      */
-    function addElement($attrs)
+    public function addElement($attrs)
     {
         $typens = isset($this->namespaces['types']) ? $this->namespaces['types'] : $this->namespaces['tns'];
         $this->schemas[$typens][0]->addElement($attrs);
@@ -1884,7 +1883,7 @@ class Wsdl extends NuSoap
      * @param string $encodingStyle optional (usually 'http://schemas.xmlsoap.org/soap/encoding/' for encoded)
      * @access public
      */
-    function addOperation($name, $in = false, $out = false, $namespace = false, $soapaction = false, $style = 'rpc', $use = 'encoded', $documentation = '', $encodingStyle = '')
+    public function addOperation($name, $in = false, $out = false, $namespace = false, $soapaction = false, $style = 'rpc', $use = 'encoded', $documentation = '', $encodingStyle = '')
     {
         if ($use == 'encoded' && $encodingStyle == '') {
             $encodingStyle = 'http://schemas.xmlsoap.org/soap/encoding/';
