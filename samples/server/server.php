@@ -37,7 +37,7 @@ foreach (get_class_methods(MyClassExample::class) as $method) {
             ['return' => 'xsd:string'],
             "urn:$host",
             "urn:$host#$method",
-            Style::RPC,
+            Style::DOCUMENT,
             'encoded'
         );
     }
