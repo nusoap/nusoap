@@ -35,5 +35,5 @@ jobs:
             -   name: Install dependencies
                 run: composer install --prefer-dist --no-progress
 
-            -   name: Run test suite
-                run: vendor/bin/codecept run
+            -   name: Run unit tests
+                run: vendor/bin/codecept run unit
