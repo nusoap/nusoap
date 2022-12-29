@@ -1894,6 +1894,7 @@ class Wsdl extends NuSoap
             foreach ($in as $n => $t) {
                 $elements[$n] = array('name' => $n, 'type' => $t, 'form' => 'unqualified');
             }
+
             $this->addComplexType($name . 'RequestType', 'complexType', 'struct', 'all', '', $elements);
             $this->addElement(array('name' => $name, 'type' => $name . 'RequestType'));
             $in = array('parameters' => 'tns:' . $name . '^');
@@ -1902,6 +1903,7 @@ class Wsdl extends NuSoap
             foreach ($out as $n => $t) {
                 $elements[$n] = array('name' => $n, 'type' => $t, 'form' => 'unqualified');
             }
+
             $this->addComplexType($name . 'ResponseType', 'complexType', 'struct', 'all', '', $elements);
             $this->addElement(array('name' => $name . 'Response', 'type' => $name . 'ResponseType', 'form' => 'qualified'));
             $out = array('parameters' => 'tns:' . $name . 'Response' . '^');
@@ -1937,21 +1939,25 @@ class Wsdl extends NuSoap
                 if (strpos($pType, ':')) {
                     $pType = $this->getNamespaceFromPrefix($this->getPrefix($pType)) . ":" . $this->getLocalPart($pType);
                 }
+
                 $this->messages[$name . 'Request'][$pName] = $pType;
             }
         } else {
             $this->messages[$name . 'Request'] = '0';
         }
+
         if ($out) {
             foreach ($out as $pName => $pType) {
                 if (strpos($pType, ':')) {
                     $pType = $this->getNamespaceFromPrefix($this->getPrefix($pType)) . ":" . $this->getLocalPart($pType);
                 }
+
                 $this->messages[$name . 'Response'][$pName] = $pType;
             }
         } else {
             $this->messages[$name . 'Response'] = '0';
         }
+
         return true;
     }
 }

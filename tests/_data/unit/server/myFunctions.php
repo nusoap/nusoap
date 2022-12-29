@@ -1,13 +1,13 @@
 <?php
 
-require_once './MyClassExample.php';
+require_once 'tests/_data/unit/server/MyClassThatDenifineMyWebServiceMethods.php';
 
 function demonstration(
     $parameterOne = '$parameterOne',
     $parameterTwo = '$parameterTwo',
     $parameterThree = '$parameterThree'
 ) {
-    return (new MyClassExample())
+    return (new MyClassThatDenifineMyWebServiceMethods())
         ->demonstration(
             $parameterOne,
             $parameterTwo,
@@ -19,7 +19,7 @@ function uploadFile(
     $filename,
     $file
 ) {
-    return (new MyClassExample())
+    return (new MyClassThatDenifineMyWebServiceMethods())
         ->uploadFile(
             $filename,
             $file
