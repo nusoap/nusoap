@@ -10,7 +10,7 @@
     },
     "logs": {
         "stryker": {
-            "report": "tests"
+            "report": "main"
         }
     },
     "testFramework": "codeception",
