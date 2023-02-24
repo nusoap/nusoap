@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<definitions xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:SOAP-ENC="http://schemas.xmlsoap.org/soap/encoding/" xmlns:tns="localhost" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns="http://schemas.xmlsoap.org/wsdl/" targetNamespace="localhost">
+    <types>
+        <xsd:schema targetNamespace="localhost"
+        >
+            <xsd:import namespace="http://schemas.xmlsoap.org/soap/encoding/" />
+            <xsd:import namespace="http://schemas.xmlsoap.org/wsdl/" />
+            <xsd:complexType name="demonstrationRequestType">
+                <xsd:all>
+                    <xsd:element name="parameterOne" type="xsd:string" form="unqualified"/>
+                    <xsd:element name="parameterTwo" type="xsd:string" form="unqualified"/>
+                    <xsd:element name="parameterThree" type="xsd:string" form="unqualified"/>
+                </xsd:all>
+            </xsd:complexType>
+            <xsd:complexType name="demonstrationResponseType">
+                <xsd:all>
+                    <xsd:element name="return" type="xsd:string" form="unqualified"/>
+                </xsd:all>
+            </xsd:complexType>
+            <xsd:complexType name="uploadFileRequestType">
+                <xsd:all>
+                    <xsd:element name="filename" type="xsd:string" form="unqualified"/>
+                    <xsd:element name="file" type="xsd:string" form="unqualified"/>
+                </xsd:all>
+            </xsd:complexType>
+            <xsd:complexType name="uploadFileResponseType">
+                <xsd:all>
+                    <xsd:element name="return" type="xsd:string" form="unqualified"/>
+                </xsd:all>
+            </xsd:complexType>
+            <xsd:element name="demonstration" type="tns:demonstrationRequestType"/>
+            <xsd:element name="demonstrationResponse" type="tns:demonstrationResponseType"/>
+            <xsd:element name="uploadFile" type="tns:uploadFileRequestType"/>
+            <xsd:element name="uploadFileResponse" type="tns:uploadFileResponseType"/>
+        </xsd:schema>
+    </types>
+    <message name="demonstrationRequest">
+        <part name="parameters" element="tns:demonstration" /></message>
+    <message name="demonstrationResponse">
+        <part name="parameters" element="tns:demonstrationResponse" /></message>
+    <message name="uploadFileRequest">
+        <part name="parameters" element="tns:uploadFile" /></message>
+    <message name="uploadFileResponse">
+        <part name="parameters" element="tns:uploadFileResponse" /></message>
+    <portType name="nusoapPortType">
+        <operation name="demonstration">
+            <input message="tns:demonstrationRequest"/>
+            <output message="tns:demonstrationResponse"/>
+        </operation>
+        <operation name="uploadFile">
+            <input message="tns:uploadFileRequest"/>
+            <output message="tns:uploadFileResponse"/>
+        </operation>
+    </portType>
+    <binding name="nusoapBinding" type="tns:nusoapPortType">
+        <soap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http"/>
+        <operation name="demonstration">
+            <soap:operation soapAction="urn:localhost#demonstration" style="document"/>
+            <input><soap:body use="encoded" namespace="urn:localhost" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/></input>
+            <output><soap:body use="encoded" namespace="urn:localhost" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/></output>
+        </operation>
+        <operation name="uploadFile">
+            <soap:operation soapAction="urn:localhost#uploadFile" style="document"/>
+            <input><soap:body use="encoded" namespace="urn:localhost" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/></input>
+            <output><soap:body use="encoded" namespace="urn:localhost" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/></output>
+        </operation>
+    </binding>
+    <service name="nusoap">
+        <port name="nusoapPort" binding="tns:nusoapBinding">
+            <soap:address location="http://localhost/samples/server/server.php"/>
+        </port>
+    </service>
+</definitions>

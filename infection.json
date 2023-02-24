@@ -1,0 +1,19 @@
+{
+    "source": {
+        "directories": [
+            "src"
+        ]
+    },
+    "timeout": 60,
+    "mutators": {
+        "@default": true
+    },
+    "logs": {
+        "stryker": {
+            "report": "main"
+        }
+    },
+    "testFramework": "codeception",
+    "testFrameworkOptions": "unit -q"
+}
+
