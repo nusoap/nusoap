@@ -37,3 +37,9 @@ jobs:
 
             -   name: Run unit tests
                 run: vendor/bin/codecept run unit
+
+            -   name: Run infection suite
+                timeout-minutes: 10
+                env:
+                    STRYKER_DASHBOARD_API_KEY: ${{ secrets.STRYKER_DASHBOARD_API_KEY }}
+                run: composer infection
