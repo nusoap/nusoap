@@ -50,7 +50,7 @@ jobs:
         strategy:
             max-parallel: 10
             matrix:
-                php: ['7.4' ]
+                php: ['7.3', '7.4' ]
                 psr7: [ '^1.9', '^2.4' ]
 #                include:
 #                    -   php: '8.0'
