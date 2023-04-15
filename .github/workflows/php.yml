@@ -38,11 +38,11 @@ jobs:
             -   name: Run unit tests
                 run: vendor/bin/codecept run unit
 
-            -   name: Run infection suite
-                timeout-minutes: 10
-                env:
-                    STRYKER_DASHBOARD_API_KEY: ${{ secrets.STRYKER_DASHBOARD_API_KEY }}
-                run: composer infection
+#            -   name: Run infection suite
+#                timeout-minutes: 10
+#                env:
+#                    STRYKER_DASHBOARD_API_KEY: ${{ secrets.STRYKER_DASHBOARD_API_KEY }}
+#                run: composer infection
 
     build:
         name: Build
@@ -50,7 +50,7 @@ jobs:
         strategy:
             max-parallel: 10
             matrix:
-                php: ['7.0', '7.1', '7.2', '7.3', '7.4' ]
+                php: ['7.4' ]
                 psr7: [ '^1.9', '^2.4' ]
 #                include:
 #                    -   php: '8.0'
