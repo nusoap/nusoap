@@ -586,7 +586,7 @@ class Parser extends NuSoap
      * @param string $encoding
      * @return void
      */
-    public function parse($xml, $encoding): void
+    public function parse($xml, $encoding)
     {
         // Check whether content has been read.
         if (!empty($xml)) {

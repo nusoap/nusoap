@@ -5,15 +5,11 @@ on:
         branches: [ "*" ]
     pull_request:
         branches: [ "*" ]
-
 permissions:
     contents: read
-
 jobs:
     build:
-
         runs-on: ubuntu-latest
-
         steps:
             -   name: Prepare
                 run: sudo chown -R $USER:$USER ${{ github.workspace }}
@@ -37,6 +33,9 @@ jobs:
 
             -   name: Run unit tests
                 run: vendor/bin/codecept run unit
+
+            -   name: Check PHP Compability versions 5.6 and above
+                run: composer php56_more_compability
 
             -   name: Run infection suite
                 timeout-minutes: 10

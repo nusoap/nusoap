@@ -192,9 +192,6 @@ class Server extends NuSoap
         if (isset($_SERVER)) {
             $this->debug("_SERVER is defined:");
             $this->appendDebug($this->varDump($_SERVER));
-        } elseif (isset($HTTP_SERVER_VARS)) {
-            $this->debug("HTTP_SERVER_VARS is defined:");
-            $this->appendDebug($this->varDump($HTTP_SERVER_VARS));
         } else {
             $this->debug("Neither _SERVER nor HTTP_SERVER_VARS is defined.");
         }
@@ -207,14 +204,6 @@ class Server extends NuSoap
             foreach ($qs as $v) {
                 if (substr($v, 0, 6) == 'debug=') {
                     $this->debug("In nusoap_server, set debug_flag=" . substr($v, 6) . " based on query string #1");
-                    $this->debug_flag = substr($v, 6);
-                }
-            }
-        } elseif (isset($HTTP_SERVER_VARS['QUERY_STRING'])) {
-            $qs = explode('&', $HTTP_SERVER_VARS['QUERY_STRING']);
-            foreach ($qs as $v) {
-                if (substr($v, 0, 6) == 'debug=') {
-                    $this->debug("In nusoap_server, set debug_flag=" . substr($v, 6) . " based on query string #2");
                     $this->debug_flag = substr($v, 6);
                 }
             }
@@ -252,16 +241,12 @@ class Server extends NuSoap
 
         if (isset($_SERVER['REQUEST_METHOD'])) {
             $rm = $_SERVER['REQUEST_METHOD'];
-        } elseif (isset($HTTP_SERVER_VARS['REQUEST_METHOD'])) {
-            $rm = $HTTP_SERVER_VARS['REQUEST_METHOD'];
-        } else {
+        }  else {
             $rm = '';
         }
 
         if (isset($_SERVER['QUERY_STRING'])) {
             $qs = $_SERVER['QUERY_STRING'];
-        } elseif (isset($HTTP_SERVER_VARS['QUERY_STRING'])) {
-            $qs = $HTTP_SERVER_VARS['QUERY_STRING'];
         } else {
             $qs = '';
         }
@@ -371,42 +356,6 @@ class Server extends NuSoap
                     $k = str_replace(' ', '-', strtolower(str_replace('_', ' ', substr($k, 5))));
                 } else {
                     $k = str_replace(' ', '-', strtolower(str_replace('_', ' ', $k)));
-                }
-                if ($k == 'soapaction') {
-                    // get SOAPAction header
-                    $k = 'SOAPAction';
-                    $v = str_replace('"', '', $v);
-                    $v = str_replace('\\', '', $v);
-                    $this->SOAPAction = $v;
-                } elseif ($k == 'content-type') {
-                    // get the character encoding of the incoming request
-                    if (strpos($v, '=')) {
-                        $enc = substr(strstr($v, '='), 1);
-                        $enc = str_replace('"', '', $enc);
-                        $enc = str_replace('\\', '', $enc);
-                        if (preg_match('/^(ISO-8859-1|US-ASCII|UTF-8)$/i', $enc)) {
-                            $this->xml_encoding = strtoupper($enc);
-                        } else {
-                            $this->xml_encoding = 'US-ASCII';
-                        }
-                    } else {
-                        // should be US-ASCII for HTTP 1.0 or ISO-8859-1 for HTTP 1.1
-                        $this->xml_encoding = 'ISO-8859-1';
-                    }
-                }
-                $this->headers[$k] = $v;
-                $this->request .= "$k: $v\r\n";
-                $this->debug("$k: $v");
-            }
-        } elseif (is_array($HTTP_SERVER_VARS)) {
-            $this->debug("In parse_http_headers, use HTTP_SERVER_VARS");
-            foreach ($HTTP_SERVER_VARS as $k => $v) {
-                if (substr($k, 0, 5) == 'HTTP_') {
-                    $k = str_replace(' ', '-', strtolower(str_replace('_', ' ', substr($k, 5))));
-                    $k = strtolower(substr($k, 5));
-                } else {
-                    $k = str_replace(' ', '-', strtolower(str_replace('_', ' ', $k)));
-                    $k = strtolower($k);
                 }
                 if ($k == 'soapaction') {
                     // get SOAPAction header
@@ -1031,11 +980,7 @@ class Server extends NuSoap
             if (isset($_SERVER)) {
                 $SERVER_NAME = $_SERVER['SERVER_NAME'];
                 $SCRIPT_NAME = isset($_SERVER['PHP_SELF']) ? $_SERVER['PHP_SELF'] : $_SERVER['SCRIPT_NAME'];
-                $HTTPS = isset($_SERVER['HTTPS']) ? $_SERVER['HTTPS'] : (isset($HTTP_SERVER_VARS['HTTPS']) ? $HTTP_SERVER_VARS['HTTPS'] : 'off');
-            } elseif (isset($HTTP_SERVER_VARS)) {
-                $SERVER_NAME = $HTTP_SERVER_VARS['SERVER_NAME'];
-                $SCRIPT_NAME = isset($HTTP_SERVER_VARS['PHP_SELF']) ? $HTTP_SERVER_VARS['PHP_SELF'] : $HTTP_SERVER_VARS['SCRIPT_NAME'];
-                $HTTPS = isset($HTTP_SERVER_VARS['HTTPS']) ? $HTTP_SERVER_VARS['HTTPS'] : 'off';
+                $HTTPS = isset($_SERVER['HTTPS']) ? $_SERVER['HTTPS'] : 'off';
             } else {
                 $this->setError("Neither _SERVER nor HTTP_SERVER_VARS is available");
             }
@@ -1130,12 +1075,7 @@ class Server extends NuSoap
             $SERVER_NAME = $_SERVER['SERVER_NAME'];
             $SERVER_PORT = $_SERVER['SERVER_PORT'];
             $SCRIPT_NAME = isset($_SERVER['PHP_SELF']) ? $_SERVER['PHP_SELF'] : $_SERVER['SCRIPT_NAME'];
-            $HTTPS = isset($_SERVER['HTTPS']) ? $_SERVER['HTTPS'] : (isset($HTTP_SERVER_VARS['HTTPS']) ? $HTTP_SERVER_VARS['HTTPS'] : 'off');
-        } elseif (isset($HTTP_SERVER_VARS)) {
-            $SERVER_NAME = $HTTP_SERVER_VARS['SERVER_NAME'];
-            $SERVER_PORT = $HTTP_SERVER_VARS['SERVER_PORT'];
-            $SCRIPT_NAME = isset($HTTP_SERVER_VARS['PHP_SELF']) ? $HTTP_SERVER_VARS['PHP_SELF'] : $HTTP_SERVER_VARS['SCRIPT_NAME'];
-            $HTTPS = isset($HTTP_SERVER_VARS['HTTPS']) ? $HTTP_SERVER_VARS['HTTPS'] : 'off';
+            $HTTPS = isset($_SERVER['HTTPS']) ? $_SERVER['HTTPS'] : 'off';
         } else {
             $this->setError("Neither _SERVER nor HTTP_SERVER_VARS is available");
         }
