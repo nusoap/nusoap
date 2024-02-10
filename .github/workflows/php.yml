@@ -34,7 +34,7 @@ jobs:
             -   name: Run unit tests
                 run: vendor/bin/codecept run unit
 
-            -   name: Check PHP Compability versions 5.6 and above
+            -   name: Check PHP Compatibility versions 5.6 and above
                 run: composer php56_more_compability
 
             -   name: Run infection suite
