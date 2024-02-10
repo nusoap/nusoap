@@ -76,8 +76,14 @@ class SoapVal extends NuSoap
      * @param mixed $attributes associative array of attributes to add to element serialization
      * @access   public
      */
-    public function __construct($name = 'soapval', $type = false, $value = -1, $element_ns = false, $type_ns = false, $attributes = false)
-    {
+    public function __construct(
+        $name = 'soapval',
+        $type = false,
+        $value = -1,
+        $element_ns = false,
+        $type_ns = false,
+        $attributes = false
+    ) {
         parent::__construct();
         $this->name = $name;
         $this->type = $type;

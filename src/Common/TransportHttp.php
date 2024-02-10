@@ -351,7 +351,6 @@ class TransportHttp extends NuSoap
 
                 // support client certificates (thanks Tobias Boes, Doug Anarino, Eryan Ariobowo)
                 if ($this->authtype == 'certificate') {
-
                     $this->debug('set cURL certificate options');
                     if (isset($this->certRequest['cainfofile'])) {
                         $this->setCurlOption(CURLOPT_CAINFO, $this->certRequest['cainfofile']);
@@ -498,8 +497,13 @@ class TransportHttp extends NuSoap
      * @param array $certRequest (keys must be cainfofile (optional), sslcertfile, sslkeyfile, passphrase, certpassword (optional), verifypeer (optional), verifyhost (optional): see corresponding options in cURL docs)
      * @access   public
      */
-    public function setCredentials($username, $password, $authtype = 'basic', $digestRequest = array(), $certRequest = array())
-    {
+    public function setCredentials(
+        $username,
+        $password,
+        $authtype = 'basic',
+        $digestRequest = array(),
+        $certRequest = array()
+    ) {
         $this->debug("setCredentials username=$username authtype=$authtype digestRequest=");
         $this->appendDebug($this->varDump($digestRequest));
         $this->debug("certRequest=");

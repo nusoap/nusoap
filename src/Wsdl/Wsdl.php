@@ -73,8 +73,17 @@ class Wsdl extends NuSoap
      * @param boolean $use_curl try to use cURL
      * @access public
      */
-    public function __construct($wsdl = '', $proxyhost = false, $proxyport = false, $proxyusername = false, $proxypassword = false, $timeout = 0, $response_timeout = 30, $curl_options = null, $use_curl = false)
-    {
+    public function __construct(
+        $wsdl = '',
+        $proxyhost = false,
+        $proxyport = false,
+        $proxyusername = false,
+        $proxypassword = false,
+        $timeout = 0,
+        $response_timeout = 30,
+        $curl_options = null,
+        $use_curl = false
+    ) {
         parent::__construct();
 
         $this->debug("ctor wsdl=$wsdl timeout=$timeout response_timeout=$response_timeout");
@@ -1690,8 +1699,14 @@ class Wsdl extends NuSoap
      * @return string value serialized as an XML string
      * @access private
      */
-    public function serializeComplexTypeElements($typeDef, $value, $ns, $uqType, $use = 'encoded', $encodingStyle = false)
-    {
+    public function serializeComplexTypeElements(
+        $typeDef,
+        $value,
+        $ns,
+        $uqType,
+        $use = 'encoded',
+        $encodingStyle = false
+    ) {
         $this->debug("in serializeComplexTypeElements for XML Schema type $ns:$uqType");
         $xml = '';
         if (isset($typeDef['extensionBase'])) {
@@ -1800,8 +1815,16 @@ class Wsdl extends NuSoap
      * @see XmlSchema
      * @access public
      */
-    public function addComplexType($name, $typeClass = 'complexType', $phpType = 'array', $compositor = '', $restrictionBase = '', $elements = array(), $attrs = array(), $arrayType = '')
-    {
+    public function addComplexType(
+        $name,
+        $typeClass = 'complexType',
+        $phpType = 'array',
+        $compositor = '',
+        $restrictionBase = '',
+        $elements = array(),
+        $attrs = array(),
+        $arrayType = ''
+    ) {
         if (count($elements) > 0) {
             $eElements = array();
             foreach ($elements as $n => $e) {
@@ -1848,8 +1871,13 @@ class Wsdl extends NuSoap
      * @see XmlSchema
      * @access public
      */
-    public function addSimpleType($name, $restrictionBase = '', $typeClass = 'simpleType', $phpType = 'scalar', $enumeration = array())
-    {
+    public function addSimpleType(
+        $name,
+        $restrictionBase = '',
+        $typeClass = 'simpleType',
+        $phpType = 'scalar',
+        $enumeration = array()
+    ) {
         $restrictionBase = strpos($restrictionBase, ':') ? $this->expandQname($restrictionBase) : $restrictionBase;
 
         $typens = isset($this->namespaces['types']) ? $this->namespaces['types'] : $this->namespaces['tns'];
@@ -1883,8 +1911,17 @@ class Wsdl extends NuSoap
      * @param string $encodingStyle optional (usually 'http://schemas.xmlsoap.org/soap/encoding/' for encoded)
      * @access public
      */
-    public function addOperation($name, $in = false, $out = false, $namespace = false, $soapaction = false, $style = 'rpc', $use = 'encoded', $documentation = '', $encodingStyle = '')
-    {
+    public function addOperation(
+        $name,
+        $in = false,
+        $out = false,
+        $namespace = false,
+        $soapaction = false,
+        $style = Style::RPC,
+        $use = 'encoded',
+        $documentation = '',
+        $encodingStyle = ''
+    ) {
         if ($use == 'encoded' && $encodingStyle == '') {
             $encodingStyle = 'http://schemas.xmlsoap.org/soap/encoding/';
         }

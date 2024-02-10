@@ -1,6 +1,7 @@
 <?php
 
 namespace NuSoap\Common;
+
 use NuSoap\NuSoap;
 
 //use NuSoap\arrayType;
@@ -96,7 +97,7 @@ class XmlSchema extends NuSoap
      * @return boolean
      * @access public
      */
-    function parseFile($xml, $type)
+    public function parseFile($xml, $type)
     {
         // parse xml file
         if ($xml != "") {
@@ -123,7 +124,7 @@ class XmlSchema extends NuSoap
      * @param string $type (schema|xml)
      * @access   private
      */
-    function parseString($xml, $type)
+    public function parseString($xml, $type)
     {
         // parse xml string
         if ($xml != "") {
@@ -171,7 +172,7 @@ class XmlSchema extends NuSoap
      * @return    string    A type name for an unnamed type
      * @access    private
      */
-    function CreateTypeName($ename)
+    public function CreateTypeName($ename)
     {
         $scope = '';
         for ($i = 0; $i < count($this->complexTypeStack); $i++) {
@@ -188,7 +189,7 @@ class XmlSchema extends NuSoap
      * @param string $attrs associative array of attributes
      * @access   private
      */
-    function schemaStartElement($parser, $name, $attrs)
+    public function schemaStartElement($parser, $name, $attrs)
     {
 
         // position in the total number of elements, starting from 0
@@ -516,7 +517,7 @@ class XmlSchema extends NuSoap
      * @param string $name element name
      * @access   private
      */
-    function schemaEndElement($parser, $name)
+    public function schemaEndElement($parser, $name)
     {
         // bring depth down a notch
         $this->depth--;
@@ -556,7 +557,7 @@ class XmlSchema extends NuSoap
      * @param string $data element content
      * @access   private
      */
-    function schemaCharacterData($parser, $data)
+    public function schemaCharacterData($parser, $data)
     {
         $pos = $this->depth_array[$this->depth - 1];
         $this->message[$pos]['cdata'] .= $data;
@@ -567,7 +568,7 @@ class XmlSchema extends NuSoap
      *
      * @access   public
      */
-    function serializeSchema()
+    public function serializeSchema()
     {
 
         $schemaPrefix = $this->getPrefixFromNamespace($this->XMLSchemaVersion);
@@ -686,7 +687,7 @@ class XmlSchema extends NuSoap
      * @param string $string debug data
      * @access   private
      */
-    function xdebug($string)
+    public function xdebug($string)
     {
         $this->debug('<' . $this->schemaTargetNamespace . '> ' . $string);
     }
@@ -703,7 +704,7 @@ class XmlSchema extends NuSoap
      * @access public
      * @deprecated
      */
-    function getPHPType($type, $ns)
+    public function getPHPType($type, $ns)
     {
         if (isset($this->typemap[$ns][$type])) {
             //print "found type '$type' and ns $ns in typemap<br>";
@@ -737,7 +738,7 @@ class XmlSchema extends NuSoap
      * @see addSimpleType
      * @see addElement
      */
-    function getTypeDef($type)
+    public function getTypeDef($type)
     {
         //$this->debug("in getTypeDef for type $type");
         if (substr($type, -1) == '^') {
@@ -817,7 +818,7 @@ class XmlSchema extends NuSoap
      * @access public
      * @deprecated
      */
-    function serializeTypeDef($type)
+    public function serializeTypeDef($type)
     {
         //print "in sTD() for type $type<br>";
         if ($typeDef = $this->getTypeDef($type)) {
@@ -854,7 +855,7 @@ class XmlSchema extends NuSoap
      * @access public
      * @deprecated
      */
-    function typeToForm($name, $type)
+    public function typeToForm($name, $type)
     {
         $buffer = '';
 
@@ -930,8 +931,16 @@ class XmlSchema extends NuSoap
      * @access public
      * @see getTypeDef
      */
-    function addComplexType($name, $typeClass = 'complexType', $phpType = 'array', $compositor = '', $restrictionBase = '', $elements = array(), $attrs = array(), $arrayType = '')
-    {
+    public function addComplexType(
+        $name,
+        $typeClass = 'complexType',
+        $phpType = 'array',
+        $compositor = '',
+        $restrictionBase = '',
+        $elements = array(),
+        $attrs = array(),
+        $arrayType = ''
+    ) {
         $this->complexTypes[$name] = array(
             'name' => $name,
             'typeClass' => $typeClass,
@@ -959,8 +968,13 @@ class XmlSchema extends NuSoap
      * @see XmlSchema
      * @see getTypeDef
      */
-    function addSimpleType($name, $restrictionBase = '', $typeClass = 'simpleType', $phpType = 'scalar', $enumeration = array())
-    {
+    public function addSimpleType(
+        $name,
+        $restrictionBase = '',
+        $typeClass = 'simpleType',
+        $phpType = 'scalar',
+        $enumeration = array()
+    ) {
         $this->simpleTypes[$name] = array(
             'name' => $name,
             'typeClass' => $typeClass,
@@ -980,7 +994,7 @@ class XmlSchema extends NuSoap
      * @see XmlSchema
      * @access public
      */
-    function addElement($attrs)
+    public function addElement($attrs)
     {
         if (!$this->getPrefix($attrs['type'])) {
             $attrs['type'] = $this->schemaTargetNamespace . ':' . $attrs['type'];

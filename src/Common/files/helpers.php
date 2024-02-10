@@ -1,7 +1,5 @@
 <?php
 
-
-
 // XML Schema Datatype Helper Functions
 
 //xsd:dateTime helpers
@@ -40,7 +38,15 @@ if (!function_exists('timestamp_to_iso8601')) {
                 '/';
 
             if (preg_match($pattern, $datestr, $regs)) {
-                return sprintf('%04d-%02d-%02dT%02d:%02d:%02dZ', $regs[1], $regs[2], $regs[3], $regs[4], $regs[5], $regs[6]);
+                return sprintf(
+                    '%04d-%02d-%02dT%02d:%02d:%02dZ',
+                    $regs[1],
+                    $regs[2],
+                    $regs[3],
+                    $regs[4],
+                    $regs[5],
+                    $regs[6]
+                );
             }
             return false;
         } else {
@@ -112,4 +118,3 @@ if (!function_exists('usleepWindows')) {
         } while ($timePassed < $usec);
     }
 }
-

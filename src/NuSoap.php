@@ -499,8 +499,16 @@ class NuSoap
      * @return    string    The serialized element, possibly with child elements
      * @access    public
      */
-    public function serialize_val($val, $name = false, $type = false, $name_ns = false, $type_ns = false, $attributes = false, $use = 'encoded', $soapval = false)
-    {
+    public function serialize_val(
+        $val,
+        $name = false,
+        $type = false,
+        $name_ns = false,
+        $type_ns = false,
+        $attributes = false,
+        $use = 'encoded',
+        $soapval = false
+    ) {
         $this->debug("in serialize_val: name=$name, type=$type, name_ns=$name_ns, type_ns=$type_ns, use=$use, soapval=$soapval");
         $this->appendDebug('value=' . $this->varDump($val));
         $this->appendDebug('attributes=' . $this->varDump($attributes));
@@ -777,8 +785,14 @@ class NuSoap
      * @return string the message
      * @access public
      */
-    public function serializeEnvelope($body, $headers = false, $namespaces = array(), $style = 'rpc', $use = 'encoded', $encodingStyle = 'http://schemas.xmlsoap.org/soap/encoding/')
-    {
+    public function serializeEnvelope(
+        $body,
+        $headers = false,
+        $namespaces = array(),
+        $style = 'rpc',
+        $use = 'encoded',
+        $encodingStyle = 'http://schemas.xmlsoap.org/soap/encoding/'
+    ) {
         // TODO: add an option to automatically run utf8_encode on $body and $headers
         // if $this->soap_defencoding is UTF-8.  Not doing this automatically allows
         // one to send arbitrary UTF-8 characters, not just characters that map to ISO-8859-1

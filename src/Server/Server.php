@@ -995,8 +995,17 @@ class Server extends NuSoap
      * @param string $encodingStyle optional (usually 'http://schemas.xmlsoap.org/soap/encoding/' for encoded)
      * @access   public
      */
-    public function register($name, $in = array(), $out = array(), $namespace = false, $soapaction = false, $style = false, $use = false, $documentation = '', $encodingStyle = '')
-    {
+    public function register(
+        $name,
+        $in = array(),
+        $out = array(),
+        $namespace = false,
+        $soapaction = false,
+        $style = false,
+        $use = false,
+        $documentation = '',
+        $encodingStyle = ''
+    ) {
 //        global $HTTP_SERVER_VARS;
 
         if ($this->externalWSDLURL) {
@@ -1061,7 +1070,17 @@ class Server extends NuSoap
         ];
 
         if ($this->wsdl) {
-            $this->wsdl->addOperation($name, $in, $out, $namespace, $soapaction, $style, $use, $documentation, $encodingStyle);
+            $this->wsdl->addOperation(
+                $name,
+                $in,
+                $out,
+                $namespace,
+                $soapaction,
+                $style,
+                $use,
+                $documentation,
+                $encodingStyle
+            );
         }
 
         return true;
