@@ -36,6 +36,10 @@ class TransportHttp extends NuSoap
     public $ch = false;    // cURL handle
     public $ch_options = [];    // cURL custom options
     public $use_curl = false;        // force cURL use
+    // socket file pointer for non-cURL requests
+    public $fp;
+    // internal retry flag used while establishing a connection
+    public $tryagain;
     public $proxy = null;            // proxy information (associative array)
     public $username = '';
     public $password = '';

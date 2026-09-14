@@ -17,6 +17,8 @@ class Parser extends NuSoap
 {
     public $xml = '';
     public $xml_encoding = '';
+    // xml_parser resource/object handle
+    public $parser;
     public $method = '';
     public $root_struct = '';
     public $root_struct_name = '';
@@ -29,6 +31,8 @@ class Parser extends NuSoap
     public $depth = 0;
     public $default_namespace = '';
     public $namespaces = [];
+    // namespace of the currently parsed method element
+    public $methodNamespace = '';
     public $message = [];
     public $parent = '';
     public $fault = false;
@@ -352,7 +356,8 @@ class Parser extends NuSoap
             // raw UTF-8 that, e.g., might not map to iso-8859-1
             // TODO: this can also be handled with xml_parser_set_option($this->parser, XML_OPTION_TARGET_ENCODING, "ISO-8859-1");
             if ($this->decode_utf8) {
-                $data = utf8_decode($data);
+                // utf8_decode() is deprecated since PHP 8.2; mb_convert_encoding() is the direct replacement
+                $data = mb_convert_encoding($data, 'ISO-8859-1', 'UTF-8');
             }
         }
         $this->message[$pos]['cdata'] .= $data;
@@ -621,11 +626,9 @@ class Parser extends NuSoap
             //xml_parser_set_option($parser, XML_OPTION_SKIP_WHITE, 1);
             xml_parser_set_option($this->parser, XML_OPTION_CASE_FOLDING, 0);
             xml_parser_set_option($this->parser, XML_OPTION_TARGET_ENCODING, $this->xml_encoding);
-            // Set the object for the parser.
-            xml_set_object($this->parser, $this);
             // Set the element handlers for the parser.
-            xml_set_element_handler($this->parser, 'start_element', 'end_element');
-            xml_set_character_data_handler($this->parser, 'character_data');
+            xml_set_element_handler($this->parser, [$this, 'start_element'], [$this, 'end_element']);
+            xml_set_character_data_handler($this->parser, [$this, 'character_data']);
 
             // Parse the XML file.
             if (!xml_parse($this->parser, $xml, true)) {
