@@ -61,6 +61,11 @@ class Client extends NuSoap
     public $curl_options = array();    // User-specified cURL options
     public $bindingType = '';            // WSDL operation binding type
     public $use_curl = false;            // whether to always try to use cURL
+    public $wsdl = null;                // Wsdl object, set when initialized via WSDL
+    public $wsdlFile = '';                // WSDL location used for the last WSDL fetch
+    public $namespaces = [];        // namespaces used by the WSDL/operation
+    public $opData = [];            // WSDL operation data for the current call
+    public $return = null;                // raw return value from the last call
 
     /*
      * fault related variables

@@ -19,6 +19,8 @@ class Wsdl extends NuSoap
 {
     // URL or filename of the root of this WSDL
     public $wsdl;
+    // name of the service being described
+    public $serviceName;
     // define internal arrays of bindings, ports, operations, messages, etc.
     public $schemas = [];
     public $currentSchema;
@@ -35,6 +37,12 @@ class Wsdl extends NuSoap
     public $currentPort;
     public $opData = [];
     public $status = '';
+    // WSDL <documentation> or arbitrary extra info collected during parsing
+    public $wsdl_info = [];
+    // name of the port/operation currently being parsed
+    public $currentPortOperation;
+    // 'input' or 'output', tracks which message part is being parsed
+    public $opStatus;
     public $documentation = false;
     public $endpoint = '';
     // array of wsdl docs to import
@@ -270,11 +278,9 @@ class Wsdl extends NuSoap
         // Set the options for parsing the XML data.
         // xml_parser_set_option($parser, XML_OPTION_SKIP_WHITE, 1);
         xml_parser_set_option($this->parser, XML_OPTION_CASE_FOLDING, 0);
-        // Set the object for the parser.
-        xml_set_object($this->parser, $this);
         // Set the element handlers for the parser.
-        xml_set_element_handler($this->parser, 'start_element', 'end_element');
-        xml_set_character_data_handler($this->parser, 'character_data');
+        xml_set_element_handler($this->parser, [$this, 'start_element'], [$this, 'end_element']);
+        xml_set_character_data_handler($this->parser, [$this, 'character_data']);
         // Parse the XML file.
         if (!xml_parse($this->parser, $wsdl_string, true)) {
             // Display an error message.

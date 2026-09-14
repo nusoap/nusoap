@@ -42,6 +42,12 @@ class Server extends NuSoap
      */
     public $requestHeaders = '';
     /**
+     * WSDL operation data resolved for the current request
+     * @var array|null
+     * @access public
+     */
+    public $opData = null;
+    /**
      * SOAP Headers from request (parsed)
      * @var mixed
      * @access public
